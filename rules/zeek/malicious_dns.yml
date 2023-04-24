@@ -1,0 +1,100 @@
+version: v1
+kind: stream_alert
+python_rule: "malicious_dns.py"
+kafka_topic: "zeek_dns"
+metadata:
+  name: "malicious DNS"
+  MITRE_ATTACK:
+    tactic: Command and Control
+    tatic_id: TA0011
+    technique: Application Layer Protocol
+    technique_id: T1071
+    sub_technique: DNS
+    sub_technique_id: T1071.004
+  MITRE_DEFEND:
+    tactic: Detect
+    tatic_id: D3-Detect
+    technique: Network Traffic Analysis
+    technique_id: D3-NTA
+    sub_technique: DNS Traffic Analysis
+    sub_technique_id: D3-DNSTA
+  RequiedFields:
+    - query
+
+tests:
+  - name: True positive
+    result: True
+    event:
+      {
+        "ts": 1644708438.122926,
+        "uid": "CQa8Aw3f2QaA3yjFt9",
+        "id.orig_h": "172.16.50.137",
+        "id.orig_p": 65264,
+        "id.resp_h": "172.16.50.100",
+        "id.resp_p": 53,
+        "proto": "udp",
+        "trans_id": 29657,
+        "query": "hammerjs.github.io",
+        "qclass": 1,
+        "qclass_name": "C_INTERNET",
+        "qtype": 1,
+        "qtype_name": "A",
+        "rcode": 0,
+        "rcode_name": "NOERROR",
+        "AA": false,
+        "TC": false,
+        "RD": true,
+        "RA": true,
+        "Z": 0,
+        "answers": [
+          "185.199.111.153",
+          "185.199.108.153",
+          "185.199.109.153",
+          "185.199.110.153"
+        ],
+        "TTLs": [
+          3599,
+          3599,
+          3599,
+          3599
+        ],
+        "rejected": false
+      }
+  - name: False positive
+    result: False
+    event:
+      {
+        "ts": 1644708438.122926,
+        "uid": "CQa8Aw3f2QaA3yjFt9",
+        "id.orig_h": "172.16.50.137",
+        "id.orig_p": 65264,
+        "id.resp_h": "172.16.50.100",
+        "id.resp_p": 53,
+        "proto": "udp",
+        "trans_id": 29657,
+        "query": "google.com",
+        "qclass": 1,
+        "qclass_name": "C_INTERNET",
+        "qtype": 1,
+        "qtype_name": "A",
+        "rcode": 0,
+        "rcode_name": "NOERROR",
+        "AA": false,
+        "TC": false,
+        "RD": true,
+        "RA": true,
+        "Z": 0,
+        "answers": [
+          "185.199.111.153",
+          "185.199.108.153",
+          "185.199.109.153",
+          "185.199.110.153"
+        ],
+        "TTLs": [
+          3599,
+          3599,
+          3599,
+          3599
+        ],
+        "rejected": false
+      }

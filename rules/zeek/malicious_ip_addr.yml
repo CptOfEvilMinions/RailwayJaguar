@@ -1,0 +1,74 @@
+version: v1
+kind: stream_alert
+python_rule: "malicious_ip_addr.py"
+kafka_topic: "zeek_conn"
+metadata:
+  name: "malicious IP addr"
+  MITRE_ATTACK:
+    tactic: Command and Control
+    tatic_id: TA0011
+    technique: Application Layer Protocol
+    technique_id: T1071
+  MITRE_DEFEND:
+    tactic: Detect
+    tatic_id: D3-Detect
+    technique: Network Traffic Analysis
+    technique_id: D3-NTA
+    sub_technique: Protocol Metadata Anomaly Detection
+    sub_technique_id: D3-PMAD
+  RequiedFields:
+    - id.resp_h
+
+tests:
+  - name: True positive
+    result: True
+    event:
+      {
+        "ts": 1644692340.170364,
+        "uid": "CY6M3z4XaPqkC7ZPdc",
+        "id.orig_h": "172.16.50.100",
+        "id.orig_p": 65459,
+        "id.resp_h": "91.189.92.38",
+        "id.resp_p": 4789,
+        "proto": "udp",
+        "service": "vxlan",
+        "duration": 0.014389991760253906,
+        "orig_bytes": 328,
+        "resp_bytes": 0,
+        "conn_state": "S0",
+        "local_orig": true,
+        "local_resp": true,
+        "missed_bytes": 0,
+        "history": "D",
+        "orig_pkts": 2,
+        "orig_ip_bytes": 384,
+        "resp_pkts": 0,
+        "resp_ip_bytes": 0,
+        "community_id": "1:dpKcgnJE5EkTgO41o0aqUuf/MIQ="
+      }
+  - name: False positive
+    result: False
+    event:
+      {
+        "ts": 1644692340.170364,
+        "uid": "CY6M3z4XaPqkC7ZPdc",
+        "id.orig_h": "172.16.50.100",
+        "id.orig_p": 65459,
+        "id.resp_h": "1.1.1.1",
+        "id.resp_p": 4789,
+        "proto": "udp",
+        "service": "vxlan",
+        "duration": 0.014389991760253906,
+        "orig_bytes": 328,
+        "resp_bytes": 0,
+        "conn_state": "S0",
+        "local_orig": true,
+        "local_resp": true,
+        "missed_bytes": 0,
+        "history": "D",
+        "orig_pkts": 2,
+        "orig_ip_bytes": 384,
+        "resp_pkts": 0,
+        "resp_ip_bytes": 0,
+        "community_id": "1:dpKcgnJE5EkTgO41o0aqUuf/MIQ="
+      }

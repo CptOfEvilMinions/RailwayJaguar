@@ -1,0 +1,6 @@
+dataclass_wizard==0.22.2
+aiokafka==0.8.0
+pyyaml==6.0
+faust_streaming==0.10.11
+pytest==7.3.1
+confluent-kafka==2.0.2
