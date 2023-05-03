@@ -130,3 +130,7 @@ dmypy.json
 
 # logs
 logs/*
+
+conf/server.yaml
+*-data/
+alerts.txt

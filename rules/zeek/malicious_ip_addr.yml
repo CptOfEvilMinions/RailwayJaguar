@@ -2,6 +2,7 @@ version: v1
 kind: stream_alert
 python_rule: "malicious_ip_addr.py"
 kafka_topic: "zeek_conn"
+enabled: true
 metadata:
   name: "malicious IP addr"
   MITRE_ATTACK:

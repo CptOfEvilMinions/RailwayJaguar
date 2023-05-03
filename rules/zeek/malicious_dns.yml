@@ -2,6 +2,7 @@ version: v1
 kind: stream_alert
 python_rule: "malicious_dns.py"
 kafka_topic: "zeek_dns"
+enabled: true
 metadata:
   name: "malicious DNS"
   MITRE_ATTACK:

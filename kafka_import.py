@@ -4,8 +4,10 @@ import argparse
 import glob
 import json
 
+
 def json_serializer(msg: str):
-    return json.dumps(json.loads(msg)).encode('utf-8')
+    return json.dumps(json.loads(msg)).encode("utf-8")
+
 
 def init_kafka_connector(args):
     conf = {
@@ -17,10 +19,12 @@ def init_kafka_connector(args):
 def main(args):
     producer = init_kafka_connector(args)
     producer.poll(0)
-    for zeek_log_file in glob.glob("logs/*.log"):
+    #for zeek_log_file in glob.glob("logs/sysmon*.log"):
+    #    zeek_type = "sysmon"
+    for zeek_log_file in glob.glob(f"logs/{args.log_filter}.log"):
         zeek_type = zeek_log_file.split("/")[1].split(".")[0]
-        with open(zeek_log_file, "r", encoding='utf-8') as f:
-            print (zeek_type)
+        with open(zeek_log_file, "r", encoding="utf-8") as f:
+            print(zeek_log_file)
             for line in f:
                 producer.produce(
                     topic=f"zeek_{zeek_type}",
@@ -28,9 +32,21 @@ def main(args):
                 )
                 producer.flush()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="JSONSerailizer example")
-    parser.add_argument('-b', dest="bootstrap_servers", required=True,
-                        help="Bootstrap broker(s) (host[:port])")
+    parser.add_argument(
+        "-b",
+        dest="bootstrap_servers",
+        required=True,
+        help="Bootstrap broker(s) (host[:port])",
+    )
+    parser.add_argument(
+        "--log_filter",
+        dest="log_filter",
+        default="*",
+        required=False,
+        help="Filter for log files",
+    )
 
     main(parser.parse_args())
