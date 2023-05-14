@@ -3,7 +3,7 @@ from pkg.rules.load import (
     ReadRuleYaml,
     LoadRuleModule,
     GenerateListOfRules,
-    LoadRulesYaml
+    LoadRulesYaml,
 )
 
 
@@ -21,7 +21,7 @@ def test_readRuleYaml():
 
 
 def test_negativeReadRuleYaml():
-    fake_file_path = 'file/path/mock'
+    fake_file_path = "file/path/mock"
     yamlNotBool = """
     version: v1
     kind: stream_alert
@@ -31,13 +31,13 @@ def test_negativeReadRuleYaml():
     metadata:
       name: "malicious community_id"
     tests: []"""
-    with patch('pkg.rules.load.open', new=mock_open(read_data=yamlNotBool)) as _file:
+    with patch("pkg.rules.load.open", new=mock_open(read_data=yamlNotBool)) as _file:
         ruleYaml = ReadRuleYaml(fake_file_path)
-        _file.assert_called_once_with(fake_file_path, 'r')
+        _file.assert_called_once_with(fake_file_path, "r")
         print("hello0")
         print("hello0")
         print("hello0")
-        print (ruleYaml)
+        print(ruleYaml)
         print("hello0")
         print("hello0")
         print("hello0")
@@ -56,11 +56,14 @@ def test_negativeLoadRuleModule():
 def test_GenerateListOfRules():
     assert True is False
 
+
 def test_NegativeGenerateListOfRules():
     assert True is False
 
+
 def test_LoadRulesYaml():
     assert True is False
+
 
 def test_NegativeLoadRulesYaml():
     assert True is False

@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+RUN useradd railwayjaguar
+
+RUN apt-get update -y
+RUN apt-get install -y python3 \
+    python3-dev \ 
+    python3-pip \
+    gcc
+
+COPY . /app
+WORKDIR /app
+RUN pip3 install -r requirements.txt
+
+USER railwayjaguar
+CMD [ "python3", "main.py", "worker" ]

@@ -1,8 +1,8 @@
 version: v1
 kind: stream_alert
-python_rule: "powershell_empire.py"
-kafka_topic: "sysmon"
-enabled: true
+pythonrule: "powershell_empire.py"
+kafkatopic: "sysmon"
+enabled: False
 metadata:
   name: "malicious community_id"
   MITRE_ATTACK:

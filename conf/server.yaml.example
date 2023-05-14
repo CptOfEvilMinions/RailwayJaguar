@@ -1,7 +1,9 @@
 app:
   name: test
 kafka:
-  boostrap_servers: kafka.hackinglab.local:9092
+  boostrapservers:
+    - kafka.hackinglab.local:9092
+    - broker:29092
 secret:
-  vault_addr: "vault.hackinglab.local"
-  
+  vaultaddr: "vault.hackinglab.local"
+  vaulttoken: ""

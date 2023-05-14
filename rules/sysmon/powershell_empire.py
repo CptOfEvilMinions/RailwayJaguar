@@ -3,12 +3,13 @@ from typing import Any, List
 powershell_empire_cmd: List[str] = [
     "-exec",
     "bypass",
-    "-nologo", 
+    "-nologo",
     "-nop",
     "-w",
-    "hidden", 
+    "hidden",
     "-enc",
 ]
+
 
 def rule(event: Any) -> bool:
     executable = event.get("process", None).get("name", None)
@@ -18,7 +19,7 @@ def rule(event: Any) -> bool:
     command_line = event.get("process", None).get("command_line", None)
     if command_line is None:
         return False
-    
+
     count = 0
     for cmdlet in command_line.split(" "):
         if cmdlet in command_line:

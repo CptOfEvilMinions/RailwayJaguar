@@ -1,6 +1,4 @@
-from pkg.config.load import (
-    VerifyConfig
-)
+from pkg.config.load import VerifyConfig
 from pkg.rules.load import (
     GenerateListOfRules,
     ReadRuleYaml,
@@ -11,7 +9,6 @@ import argparse
 
 def generate_module_path(filePath: str) -> str:
     return ".".join(filePath.split("/")).removesuffix(".yml")
-
 
 
 def test_all_rules():

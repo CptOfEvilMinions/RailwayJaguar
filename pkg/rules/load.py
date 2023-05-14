@@ -4,7 +4,7 @@ from pkg.rules.yaml_checker import (
     validateKind,
     validateKafkaTopic,
     validatePythonRule,
-    validateVersion
+    validateVersion,
 )
 from typing import Dict, Any, List
 from types import ModuleType
@@ -40,7 +40,6 @@ class Rule(YAMLWizard):
         validateKind(self.Kind)
         validatePythonRule(self.PythonRule)
         validateKafkaTopic(self.KafkaTopic)
-        validateTests(self.Tests)
 
 
 def ReadRuleYaml(filePath: str) -> Rule:
@@ -55,13 +54,13 @@ def ReadRuleYaml(filePath: str) -> Rule:
         (yaml.YAMLError): YAML error when reading the file
     """
     with open(filePath, "r") as f:
-        ruleYaml: Rule = ReadRuleYaml.from_yaml(f.read())
+        ruleYaml: Rule = Rule.from_yaml(f.read())
     return ruleYaml
 
 
 def LoadRuleModule(filePath: str) -> ModuleType:
     """
-    Load rule module 
+    Load rule module
 
     Parameters:
         filePath (str): File path rule module
@@ -75,6 +74,7 @@ def LoadRuleModule(filePath: str) -> ModuleType:
     except Exception as exc:
         raise exc
     return mod
+
 
 def GenerateListOfRules(fileGlob: str = "rules/**/*.yml") -> List[str]:
     """
@@ -91,7 +91,7 @@ def GenerateListOfRules(fileGlob: str = "rules/**/*.yml") -> List[str]:
 
 def LoadRulesYaml(ruleYamlsFilePaths: List[str]) -> Dict[str, Rule]:
     """
-    Generate a dict of rules for the for the specified 
+    Generate a dict of rules for the for the specified
     list of YAML rule files
 
     Parameters:
@@ -106,6 +106,3 @@ def LoadRulesYaml(ruleYamlsFilePaths: List[str]) -> Dict[str, Rule]:
         if rule.Enabled is True:
             rules[ruleYamlFilePath] = rule
     return rules
-
-
-

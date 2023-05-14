@@ -19,7 +19,7 @@ def init_kafka_connector(args):
 def main(args):
     producer = init_kafka_connector(args)
     producer.poll(0)
-    #for zeek_log_file in glob.glob("logs/sysmon*.log"):
+    # for zeek_log_file in glob.glob("logs/sysmon*.log"):
     #    zeek_type = "sysmon"
     for zeek_log_file in glob.glob(f"logs/{args.log_filter}.log"):
         zeek_type = zeek_log_file.split("/")[1].split(".")[0]

@@ -3,11 +3,8 @@ from pkg.config.load import Config
 from typing import List
 
 
-
 def InitAdminClient(conf: Config) -> AdminClient:
-    c = {
-        'bootstrap.servers': ",".join(conf.kafka.boostrap_servers)
-    }
+    c = {"bootstrap.servers": ",".join(conf.Kafka.BoostrapServers)}
     return AdminClient(c)
 
 

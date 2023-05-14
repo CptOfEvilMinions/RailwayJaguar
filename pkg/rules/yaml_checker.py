@@ -7,6 +7,7 @@ kafkaTopicRegex = r"^[a-zA-Z0-9-_]+$"
 # https://regex101.com/r/Qkq6yi/1
 pythonFilePathRegex = r"[a-zA-Z0-9-_]+.py"
 
+
 def validateKind(kind: str) -> bool:
     if kind == "stream_alert":
         return True

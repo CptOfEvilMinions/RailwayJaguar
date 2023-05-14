@@ -2,6 +2,7 @@ from typing import List
 import faust
 import yarl
 
+
 def RegisterFaustApp(app_name: str, kafka_brokers: List[str]) -> faust.App:
     """
     Register a Faust app
@@ -15,6 +16,6 @@ def RegisterFaustApp(app_name: str, kafka_brokers: List[str]) -> faust.App:
     """
     # https://github.com/robinhood/faust/issues/156
     return faust.App(
-        app_name, 
+        app_name,
         broker=[f"kafka://{yarl.URL(kb)}" for kb in kafka_brokers],
     )

@@ -42,3 +42,4 @@ repos:
         entry: python3 cli.py test
         language: python
         types: [python]
+        additional_dependencies: [dataclass_wizard==0.22.2]

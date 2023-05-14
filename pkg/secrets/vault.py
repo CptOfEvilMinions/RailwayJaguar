@@ -12,7 +12,7 @@ def GetSecret(vault_addr: str, vault_token: str, secret_path: str) -> tuple[int,
     Returns:
         (str): Return secret in cleartext
     """
-    headers: Dict[str,str] = {
+    headers: Dict[str, str] = {
         "X-Vault-Token": vault_token,
     }
     r = requests.get(

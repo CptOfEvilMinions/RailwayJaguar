@@ -30,7 +30,9 @@ def test_validatePythonRule():
 
 
 def test_negative_validatePythonRule():
-    with pytest.raises(Exception, match=f"python_rule does not match regex {pythonFilePathRegex}"):
+    with pytest.raises(
+        Exception, match=f"python_rule does not match regex {pythonFilePathRegex}"
+    ):
         validatePythonRule("hello.c")
 
 
@@ -39,5 +41,7 @@ def test_validateKafkaTopic():
 
 
 def test_negative_validateKafkaTopic():
-    with pytest.raises(Exception, match=f"kafka_topic does not match regex {kafkaTopicRegex}"):
+    with pytest.raises(
+        Exception, match=f"kafka_topic does not match regex {kafkaTopicRegex}"
+    ):
         validateKafkaTopic("foor bar")

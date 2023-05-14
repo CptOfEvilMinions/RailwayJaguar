@@ -1,7 +1,7 @@
 app:
   name: test
 kafka:
-  boostrap_servers: 
+  boostrap_servers:
     - kafka.test:9092
 secret:
   vault_addr: https://vault.test:8200
