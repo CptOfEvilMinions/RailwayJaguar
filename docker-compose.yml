@@ -77,6 +77,8 @@ services:
         target: /etc/grafana/provisioning/dashboards/main.yaml
       - source: kafka_topic_dashboard
         target: /etc/grafana/provisioning/dashboards/kafka-topics.json
+      - source: railwayjaguar_dashboard
+        target: /etc/grafana/provisioning/dashboards/railwayjaguar.json
     networks:
       - default
       - metrics-backend
@@ -101,6 +103,8 @@ configs:
     file: ./conf/grafana/dashboard.yml
   kafka_topic_dashboard:
     file: ./conf/grafana/kafka-topics.json
+  railwayjaguar_dashboard:
+    file: ./conf/grafana/railwayjaguar.json
 
 volumes:
   prometheus-data:
