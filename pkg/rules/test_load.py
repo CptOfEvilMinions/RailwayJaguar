@@ -5,65 +5,73 @@ from pkg.rules.load import (
     GenerateListOfRules,
     LoadRulesYaml,
 )
+from types import ModuleType
+import unittest
 
 
-def test_readRuleYaml():
-    ruleYaml = ReadRuleYaml("tests/rules/test/powershell_empire.yml")
-    assert ruleYaml["version"] == "v1"
-    assert ruleYaml["kind"] == "stream_alert"
-    assert ruleYaml["python_rule"] == "powershell_empire.py"
-    assert ruleYaml["kafka_topic"] == "sysmon"
-    assert ruleYaml["enabled"] is True
-    assert ruleYaml["metadata"]["name"] == "malicious community_id"
-    assert ruleYaml["metadata"]["MITRE_ATTACK"]["sub_technique_id"] == "T1059.001"
-    assert ruleYaml["metadata"]["MITRE_DEFEND"]["sub_technique_id"] == "D3-PSA"
-    assert ruleYaml["metadata"]["RequiedFields"] == ["process.command_line"]
+class Test(unittest.TestCase):
+    def test_readRuleYaml(self):
+        ruleYaml = ReadRuleYaml("tests/rules/test/powershell_empire.yml")
+        self.assertEqual(ruleYaml.Version, "v1")
+        self.assertEqual(ruleYaml.Kind, "stream_alert")
+        self.assertEqual(ruleYaml.PythonRule, "powershell_empire.py")
+        self.assertEqual(ruleYaml.KafkaTopic, "sysmon")
+        self.assertTrue(ruleYaml.Enabled)
+        self.assertEqual(ruleYaml.Metadata["name"], "malicious community_id")
+        self.assertEqual(
+            ruleYaml.Metadata["MITRE_ATTACK"]["sub_technique_id"], "T1059.001"
+        )
+        self.assertEqual(
+            ruleYaml.Metadata["MITRE_DEFEND"]["sub_technique_id"], "D3-PSA"
+        )
+        self.assertEqual(ruleYaml.Metadata["RequiedFields"], ["process.command_line"])
 
+    def test_negativeReadRuleYaml(self):
+        fake_file_path = "file/path/mock"
+        yamlNotBool = """
+        version: v1
+        kind: stream_alert
+        python_rule: "powershell_empire.py"
+        kafka_topic: "sysmon"
+        enabled: "true"
+        metadata:
+        name: "malicious community_id"
+        tests: []"""
+        with self.assertRaises(Exception), patch(
+            "pkg.rules.load.open", new=mock_open(read_data=yamlNotBool)
+        ) as _file:
+            _ = ReadRuleYaml(fake_file_path)
+            _file.assert_called_once_with(fake_file_path, "r")
 
-def test_negativeReadRuleYaml():
-    fake_file_path = "file/path/mock"
-    yamlNotBool = """
-    version: v1
-    kind: stream_alert
-    python_rule: "powershell_empire.py"
-    kafka_topic: "sysmon"
-    enabled: "true"
-    metadata:
-      name: "malicious community_id"
-    tests: []"""
-    with patch("pkg.rules.load.open", new=mock_open(read_data=yamlNotBool)) as _file:
-        ruleYaml = ReadRuleYaml(fake_file_path)
-        _file.assert_called_once_with(fake_file_path, "r")
-        print("hello0")
-        print("hello0")
-        print("hello0")
-        print(ruleYaml)
-        print("hello0")
-        print("hello0")
-        print("hello0")
+    def test_loadRuleModule(self):
+        mod = LoadRuleModule(filePath="tests.rules.test.powershell_empire")
+        self.assertEqual(mod.__name__, "tests.rules.test.powershell_empire")
+        self.assertIsInstance(mod, ModuleType)
 
-    assert True is False
+    def test_negativeLoadRuleModule(self):
+        with self.assertRaises(ModuleNotFoundError):
+            _ = LoadRuleModule(filePath="tests/rules/test/powershell_empire.py")
 
+    def test_GenerateListOfRules(self):
+        self.assertEqual(
+            GenerateListOfRules(fileGlob="tests/rules/test/*.yml"),
+            ["tests/rules/test/powershell_empire.yml"],
+        )
 
-def test_loadRuleModule():
-    assert True is False
-
-
-def test_negativeLoadRuleModule():
-    assert True is False
-
-
-def test_GenerateListOfRules():
-    assert True is False
-
-
-def test_NegativeGenerateListOfRules():
-    assert True is False
-
-
-def test_LoadRulesYaml():
-    assert True is False
-
-
-def test_NegativeLoadRulesYaml():
-    assert True is False
+    def test_LoadRulesYaml(self):
+        rules = LoadRulesYaml(["tests/rules/test/powershell_empire.yml"])
+        for ruleName, rule in rules.items():
+            self.assertEqual(ruleName, "tests/rules/test/powershell_empire.yml")
+            self.assertEqual(rule.Version, "v1")
+            self.assertEqual(rule.Kind, "stream_alert")
+            self.assertEqual(rule.PythonRule, "powershell_empire.py")
+            self.assertEqual(rule.KafkaTopic, "sysmon")
+            self.assertTrue(rule.Enabled)
+            self.assertEqual(rule.Metadata["name"], "malicious community_id")
+            self.assertEqual(
+                rule.Metadata["MITRE_ATTACK"]["sub_technique_id"], "T1059.001"
+            )
+            self.assertEqual(
+                rule.Metadata["MITRE_DEFEND"]["sub_technique_id"], "D3-PSA"
+            )
+            self.assertEqual(rule.Metadata["RequiedFields"], ["process.command_line"])

@@ -1,71 +1,98 @@
+from pkg.helpers.modules import GenerateModulePath
 from pkg.config.load import VerifyConfig
+from argparse import ArgumentParser
 from pkg.rules.load import (
     GenerateListOfRules,
-    ReadRuleYaml,
     LoadRuleModule,
+    ReadRuleYaml,
+    Rule,
 )
-import argparse
+from pkg.config.load import ReadConfig, Config
+
+__CLI_VERSION = "0.1"
 
 
-def generate_module_path(filePath: str) -> str:
-    return ".".join(filePath.split("/")).removesuffix(".yml")
+def ValidateAppConfig(appConfigFilePath: str):
+    c: Config = ReadConfig(appConfigFilePath)
+    VerifyConfig(c)
 
 
-def test_all_rules():
-    for rule in GenerateListOfRules():
-        rule_yaml = ReadRuleYaml(rule)
-        VerifyConfig(rule_yaml)
-        module_path = generate_module_path(rule)
+def ValidateGlobRules(ruleGlob: str = "rules/**/*.yml"):
+    """
+    Validate all the rules in a glob file path
 
-        mod = LoadRuleModule(module_path)
-        for test in rule_yaml["tests"]:
-            assert mod.rule(event=test["event"]) is test["result"]
-        print(f"[+] - {rule} passed all the tests")
-
-
-def test_glob_rules(globPath: str):
-    for rule in GenerateListOfRules(globPath):
-        rule_yaml = ReadRuleYaml(rule)
-        VerifyConfig(rule_yaml)
-        module_path = generate_module_path(rule)
-
-        mod = LoadRuleModule(module_path)
-        for test in rule_yaml["tests"]:
-            assert mod.rule(event=test["event"]) is test["result"]
-        print(f"[+] - {rule} passed all the tests")
+    Params:
+        ruleGlob (str): Glob path to rules
+    """
+    for ruleMetdataFilePath in GenerateListOfRules(ruleGlob):
+        print(ruleMetdataFilePath)
+        ValidateRule(ruleMetdataFilePath)
 
 
-def test_rule(ruleFilePath: str):
-    rule_yaml = ReadRuleYaml(ruleFilePath)
-    VerifyConfig(rule_yaml)
-    module_path = generate_module_path(ruleFilePath)
+def ValidateRule(ruleYamlFilePath: str) -> bool:
+    """
+    Validate a rule
+
+    Params:
+        ruleFilePath (str): File path to a rule's metadata YAML file
+
+    Return:
+        (bool): Whether the rule is valid
+    """
+    rule: Rule = ReadRuleYaml(ruleYamlFilePath)
+    module_path = GenerateModulePath(ruleYamlFilePath, rule)
 
     mod = LoadRuleModule(module_path)
-    for test in rule_yaml["tests"]:
-        assert mod.rule(event=test["event"]) is test["result"]
-    print(f"[+] - {ruleFilePath} passed all the tests")
+    for test in rule.Tests:
+        if mod.rule(event=test.Event) is not test.Result:
+            print(f"[-] - {ruleYamlFilePath} failed {test.Name}")
+            return False
+    print(f"[+] - {ruleYamlFilePath} passed all the tests")
+    return True
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("RailwayJaguar CLI")
+    parser = ArgumentParser("RailwayJaguar CLI")
     subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Sub-commands help"
+        dest="command", required=True, help="commands help"
     )
 
-    #### Test sub-command ####
-    test_parser = subparsers.add_parser("test", help="test command")
-    test_parser.add_argument(
+    #### version command ####
+    versionParser = subparsers.add_parser("version", help="Print CLI version")
+
+    ############################ Test command ############################
+    testParser = subparsers.add_parser("test", help="test command")
+    testSubparser = testParser.add_subparsers(
+        dest="test_command", required=True, help="sub command help"
+    )
+
+    #### rule sub-command ####
+    ruleParser = testSubparser.add_parser("rule", help="test rule sub-command")
+    ruleParser.add_argument(
         "--rule-yaml", type=str, help="Specify a file path to a rule"
     )
-    test_parser.add_argument(
+    ruleParser.add_argument(
+        "--rule-glob", type=str, help="Specify a file glob to rules"
+    )
+
+    #### config sub-command ####
+    configParser = testSubparser.add_parser("config", help="test config sub-command")
+    configParser.add_argument(
+        "--rule-yaml", type=str, help="Specify a file path to a rule"
+    )
+    configParser.add_argument(
         "--rule-glob", type=str, help="Specify a file glob to rules"
     )
     args = parser.parse_args()
 
+    if args.command == "verion":
+        print(f"Versoin: {__CLI_VERSION}")
     if args.command == "test":
-        if args.rule_yaml is not None:
-            test_rule(args.rule_yaml)
-        if args.rule_glob is not None:
-            test_glob_rules(args.rule_glob)
-        else:
-            test_all_rules()
+        if args.test_command == "rule":
+            if args.rule_yaml is not None:
+                ValidateRule(args.rule_yaml)
+            if args.rule_glob is not None:
+                ValidateGlobRules(args.rule_glob)
+        if args.test_command == "config":
+            if args.rule_yaml is not None:
+                ValidateAppConfig(args.rule_yaml)

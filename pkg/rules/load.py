@@ -44,18 +44,18 @@ class Rule(YAMLWizard):
 
 def ReadRuleYaml(filePath: str) -> Rule:
     """
-    Return dict of the yaml file
+    Read the rule metadata YAML file
 
     Parameters:
         filePath (str): File path to YAML file to read
 
     Return:
-        (Dict[str, Any]): Yaml in the form of a dictonary
-        (yaml.YAMLError): YAML error when reading the file
+        ruleYaml (Rule): Return rule metadata
+
     """
     with open(filePath, "r") as f:
-        ruleYaml: Rule = Rule.from_yaml(f.read())
-    return ruleYaml
+        rule: Rule = Rule.from_yaml(f.read())
+    return rule
 
 
 def LoadRuleModule(filePath: str) -> ModuleType:

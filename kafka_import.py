@@ -1,5 +1,4 @@
 from confluent_kafka import Producer
-from uuid import uuid4
 import argparse
 import glob
 import json

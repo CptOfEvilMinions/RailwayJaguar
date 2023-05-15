@@ -1,29 +1,33 @@
-from pkg.ingest.kafka import CheckTopics
+from pkg.ingest.kafka import CheckTopics, KafaTopic
 from typing import List
 
-
-def test_checkTopics():
-    ruleTopics: List[str] = [
-        "zeek_conn",
-        "zeek_dns",
-        "zeek_files",
-    ]
-    kafkaTopics: List[str] = [
-        "zeek_conn",
-        "zeek_dns",
-        "zeek_files",
-    ]
-    assert CheckTopics(kafkaTopics, ruleTopics) is None
+import unittest
 
 
-def test_negativeCheckTopics():
-    ruleTopics: List[str] = [
-        "zeek_conn",
-        "zeek_dns",
-        "zeek_files",
-    ]
-    kafkaTopics: List[str] = [
-        "zeek_dns",
-        "zeek_files",
-    ]
-    assert CheckTopics(kafkaTopics, ruleTopics) is None
+class Test(unittest.TestCase):
+    def test_checkTopics(self):
+        ruleTopics: List[str] = [
+            "zeek_conn",
+            "zeek_dns",
+            "zeek_files",
+        ]
+        kafkaTopics: List[str] = [
+            "zeek_conn",
+            "zeek_dns",
+            "zeek_files",
+        ]
+        self.assertIsNone(CheckTopics(kafkaTopics, ruleTopics))
+
+    def test_negativeCheckTopics(self):
+        ruleTopics: List[str] = [
+            "zeek_conn",
+            "zeek_dns",
+            "zeek_files",
+        ]
+        kafkaTopics: List[str] = [
+            "zeek_dns",
+            "zeek_files",
+        ]
+
+        with self.assertRaises(KafaTopic):
+            CheckTopics(kafkaTopics, ruleTopics)

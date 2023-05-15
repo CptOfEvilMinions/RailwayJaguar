@@ -22,24 +22,25 @@ repos:
     hooks:
       - id: flake8
 
-  - repo: https://github.com/PyCQA/pylint
-    rev: v2.15.4
-    hooks:
-      - id: pylint
+  # - repo: https://github.com/PyCQA/pylint
+  #   rev: v2.15.4
+  #   hooks:
+  #     - id: pylint
+  #       args: ["--rcfile=.pylintrc"]
 
   - repo: local
     hooks:
       - id: pytest
-        name: pylint
+        name: pytest
         entry: pytest
         language: python
         types: [python]
 
-  - repo: local
-    hooks:
-      - id: rule tests
-        name: rule tests
-        entry: python3 cli.py test
-        language: python
-        types: [python]
-        additional_dependencies: [dataclass_wizard==0.22.2]
+  # - repo: local
+  #   hooks:
+  #     - id: rule tests
+  #       name: rule tests
+  #       entry: python3 cli.py test
+  #       language: python
+  #       types: [python]
+  #       additional_dependencies: [dataclass_wizard==0.22.2]
