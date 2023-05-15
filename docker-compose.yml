@@ -2,8 +2,10 @@
 version: '3.9'
 services:
   railwayjaguar:
-    image: railwayjaguar-railwayjaguar:latest
-    build: .
+    image: railwayjaguar
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-railwayjaguar
     networks:
       - kafka-backend
     depends_on:
@@ -25,6 +27,9 @@ services:
 
   broker:
     image: confluentinc/cp-kafka:7.4.0
+    configs:
+      - source: kafka_broker_config
+        target: /usr/share/jmx-exporter/kafka_broker.yml
     networks:
       - default
       - kafka-backend
@@ -43,17 +48,9 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
+      EXTRA_ARGS: -javaagent:/usr/share/java/cp-base-new/jmx_prometheus_javaagent-0.18.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
     volumes:
       - kafka-data:/var/lib/kafka/data
-
-  kafka-exporter:
-    image: danielqsj/kafka-exporter:v1.6.0
-    command: --kafka.server=broker:29092
-    networks:
-      - metrics-backend
-      - kafka-backend
-    depends_on:
-      - broker
 
   prometheus:
     image: prom/prometheus:v2.43.1
@@ -70,6 +67,16 @@ services:
 
   grafana:
     image: grafana/grafana:9.5.2-ubuntu
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    configs:
+      - source: grafana_prometheus_config
+        target: /etc/grafana/provisioning/datasources/automatic.yml
+      - source: grafana_dashboard_config
+        target: /etc/grafana/provisioning/dashboards/main.yaml
+      - source: kafka_topic_dashboard
+        target: /etc/grafana/provisioning/dashboards/kafka-topics.json
     networks:
       - default
       - metrics-backend
@@ -86,6 +93,14 @@ networks:
 configs:
   prom_config:
     file: ./conf/prometheus/prometheus.yml
+  kafka_broker_config:
+    file: ./conf/kafka/kafka_broker.yml
+  grafana_prometheus_config:
+    file: ./conf/grafana/prometheus.yml
+  grafana_dashboard_config:
+    file: ./conf/grafana/dashboard.yml
+  kafka_topic_dashboard:
+    file: ./conf/grafana/kafka-topics.json
 
 volumes:
   prometheus-data:
