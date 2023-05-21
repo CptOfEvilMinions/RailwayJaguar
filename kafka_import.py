@@ -2,31 +2,29 @@ from confluent_kafka import Producer
 import argparse
 import glob
 import json
+import os.path
 
 
 def json_serializer(msg: str):
     return json.dumps(json.loads(msg)).encode("utf-8")
 
 
-def init_kafka_connector(args):
+def init_kafka_connector(args: argparse.ArgumentParser):
     conf = {
-        "bootstrap.servers": f"{args.bootstrap_servers}",
+        "bootstrap.servers": f"{args.bootstrapServers}",
     }
     return Producer(conf)
 
 
-def main(args):
+def main(args: argparse.ArgumentParser):
     producer = init_kafka_connector(args)
     producer.poll(0)
-    # for zeek_log_file in glob.glob("logs/sysmon*.log"):
-    #    zeek_type = "sysmon"
-    for zeek_log_file in glob.glob(f"logs/{args.log_filter}.log"):
-        zeek_type = zeek_log_file.split("/")[1].split(".")[0]
-        with open(zeek_log_file, "r", encoding="utf-8") as f:
-            print(zeek_log_file)
+    for logFile in glob.glob(os.path.expanduser(args.logFilesGlob)):
+        with open(logFile, "r", encoding="utf-8") as f:
+            print(logFile)
             for line in f:
                 producer.produce(
-                    topic=f"zeek_{zeek_type}",
+                    topic=f"{args.logSource}_{args.logType}",
                     value=json_serializer(line),
                 )
                 producer.flush()
@@ -36,16 +34,28 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="JSONSerailizer example")
     parser.add_argument(
         "-b",
-        dest="bootstrap_servers",
+        dest="bootstrapServers",
         required=True,
         help="Bootstrap broker(s) (host[:port])",
     )
     parser.add_argument(
-        "--log_filter",
-        dest="log_filter",
-        default="*",
-        required=False,
+        "--logFilesGlob",
+        dest="logFilesGlob",
+        default="logs/*.log",
+        required=True,
         help="Filter for log files",
+    )
+    parser.add_argument(
+        "--logSource",
+        dest="logSource",
+        required=True,
+        help="Log type",
+    )
+    parser.add_argument(
+        "--logType",
+        dest="logType",
+        required=True,
+        help="Log type",
     )
 
     main(parser.parse_args())
