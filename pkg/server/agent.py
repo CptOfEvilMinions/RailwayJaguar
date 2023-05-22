@@ -20,14 +20,18 @@ def RegisterAgent(app: faust.App, topicName: str, rules: List[Any]):
         topicName (str): Name of message topic that messages are being consumed from
         rules (List[Any]): List of loaded modules which reference the rule
     """
+    # internal: bool - If set to True this means we own and are
+    # responsible for this topic: we are allowed to create or
+    # delete the topic.
+    sinkTopic = app.topic(f"{topicName}-alerts", internal=True)
 
-    @app.agent(topicName, name=f"{topicName}-agent")
+    @app.agent(topicName, name=f"{topicName}-agent", sink=[sinkTopic])
     async def match(stream: Any):
         """Produce streams of transformed data"""
         async for event in stream:
             EVENTS_INGESTED.labels(topicName).inc()
             for mod_rule in rules:
                 if mod_rule.rule(event=event):
-                    print(event)
+                    yield event
                     ALERT_COUNT.labels(topicName, mod_rule.__name__).inc()
                 EVENTS_PROCESSED.labels(topicName, mod_rule.__name__).inc()
