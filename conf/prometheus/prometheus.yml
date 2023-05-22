@@ -8,10 +8,9 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ["railwayjaguar:8000"]
-  - job_name: kafka
+
+  - job_name: kafka-broker
     static_configs:
       - targets: [
-          "kafka-exporter:9308",
-          "broker:9101",
-          "zookeeper:9101",
+          "broker:1234",
         ]
