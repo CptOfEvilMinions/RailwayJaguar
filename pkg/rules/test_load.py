@@ -1,7 +1,7 @@
 from unittest.mock import patch, mock_open
+from pkg.helpers.modules import LoadModule
 from pkg.rules.load import (
     ReadRuleYaml,
-    LoadRuleModule,
     GenerateListOfRules,
     LoadRulesYaml,
 )
@@ -11,7 +11,7 @@ import unittest
 
 class Test(unittest.TestCase):
     def test_readRuleYaml(self):
-        ruleYaml = ReadRuleYaml("tests/rules/test/powershell_empire.yml")
+        ruleYaml = ReadRuleYaml("tests/rules/powershell_empire.yml")
         self.assertEqual(ruleYaml.Version, "v1")
         self.assertEqual(ruleYaml.Kind, "stream_alert")
         self.assertEqual(ruleYaml.PythonRule, "powershell_empire.py")
@@ -44,24 +44,24 @@ class Test(unittest.TestCase):
             _file.assert_called_once_with(fake_file_path, "r")
 
     def test_loadRuleModule(self):
-        mod = LoadRuleModule(filePath="tests.rules.test.powershell_empire")
-        self.assertEqual(mod.__name__, "tests.rules.test.powershell_empire")
+        mod = LoadModule(filePath="tests.rules.powershell_empire")
+        self.assertEqual(mod.__name__, "tests.rules.powershell_empire")
         self.assertIsInstance(mod, ModuleType)
 
-    def test_negativeLoadRuleModule(self):
+    def test_negativeLoadModule(self):
         with self.assertRaises(ModuleNotFoundError):
-            _ = LoadRuleModule(filePath="tests/rules/test/powershell_empire.py")
+            _ = LoadModule(filePath="tests/rules/powershell_empire.py")
 
     def test_GenerateListOfRules(self):
         self.assertEqual(
-            GenerateListOfRules(fileGlob="tests/rules/test/*.yml"),
-            ["tests/rules/test/powershell_empire.yml"],
+            GenerateListOfRules(fileGlob="tests/rules/*.yml"),
+            ["tests/rules/powershell_empire.yml"],
         )
 
     def test_LoadRulesYaml(self):
-        rules = LoadRulesYaml(["tests/rules/test/powershell_empire.yml"])
+        rules = LoadRulesYaml(["tests/rules/powershell_empire.yml"])
         for ruleName, rule in rules.items():
-            self.assertEqual(ruleName, "tests/rules/test/powershell_empire.yml")
+            self.assertEqual(ruleName, "tests/rules/powershell_empire.yml")
             self.assertEqual(rule.Version, "v1")
             self.assertEqual(rule.Kind, "stream_alert")
             self.assertEqual(rule.PythonRule, "powershell_empire.py")

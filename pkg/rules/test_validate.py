@@ -1,4 +1,4 @@
-from pkg.rules.yaml_checker import (
+from pkg.rules.validate import (
     validateVersion,
     validateKind,
     validatePythonRule,

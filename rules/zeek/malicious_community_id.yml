@@ -3,6 +3,8 @@ kind: stream_alert
 pythonrule: "malicious_community_id.py"
 kafkatopic: "zeek_conn"
 enabled: true
+outputs:
+  - slack
 metadata:
   name: "malicious community_id"
   MITRE_ATTACK:

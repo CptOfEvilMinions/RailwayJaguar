@@ -1,54 +1,12 @@
-from pkg.helpers.modules import GenerateModulePath
-from pkg.config.load import VerifyConfig
 from argparse import ArgumentParser
-from pkg.rules.load import (
-    GenerateListOfRules,
-    LoadRuleModule,
-    ReadRuleYaml,
-    Rule,
+from pkg.cli.validate import (
+    ValidateAppConfig,
+    ValidateGlobRules,
+    ValidateRule,
 )
-from pkg.config.load import ReadConfig, Config
+
 
 __CLI_VERSION = "0.1"
-
-
-def ValidateAppConfig(appConfigFilePath: str):
-    c: Config = ReadConfig(appConfigFilePath)
-    VerifyConfig(c)
-
-
-def ValidateGlobRules(ruleGlob: str = "rules/**/*.yml"):
-    """
-    Validate all the rules in a glob file path
-
-    Params:
-        ruleGlob (str): Glob path to rules
-    """
-    for ruleMetdataFilePath in GenerateListOfRules(ruleGlob):
-        print(ruleMetdataFilePath)
-        ValidateRule(ruleMetdataFilePath)
-
-
-def ValidateRule(ruleYamlFilePath: str) -> bool:
-    """
-    Validate a rule
-
-    Params:
-        ruleFilePath (str): File path to a rule's metadata YAML file
-
-    Return:
-        (bool): Whether the rule is valid
-    """
-    rule: Rule = ReadRuleYaml(ruleYamlFilePath)
-    module_path = GenerateModulePath(ruleYamlFilePath, rule)
-
-    mod = LoadRuleModule(module_path)
-    for test in rule.Tests:
-        if mod.rule(event=test.Event) is not test.Result:
-            print(f"[-] - {ruleYamlFilePath} failed {test.Name}")
-            return False
-    print(f"[+] - {ruleYamlFilePath} passed all the tests")
-    return True
 
 
 if __name__ == "__main__":

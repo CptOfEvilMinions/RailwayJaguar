@@ -22,25 +22,28 @@ repos:
     hooks:
       - id: flake8
 
-  # - repo: https://github.com/PyCQA/pylint
-  #   rev: v2.15.4
+  # - repo: local
   #   hooks:
-  #     - id: pylint
-  #       args: ["--rcfile=.pylintrc"]
+  #     - id: pytest
+  #       name: pytest
+  #       entry: pytest
+  #       language: python
+  #       types: [python]
 
   - repo: local
     hooks:
-      - id: pytest
-        name: pytest
+      - id: pytest-check
+        name: pytest-check
         entry: pytest
-        language: python
-        types: [python]
+        language: system
+        pass_filenames: false
+        always_run: true
 
   # - repo: local
   #   hooks:
   #     - id: rule tests
   #       name: rule tests
-  #       entry: python3 cli.py test
+  #       entry: 'python3 cli.py test rule --rule-yaml tests/rules/powershell_empire.yml'
   #       language: python
-  #       types: [python]
+  #       types: [bash]
   #       additional_dependencies: [dataclass_wizard==0.22.2]

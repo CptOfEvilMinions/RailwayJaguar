@@ -1,6 +1,7 @@
-from pkg.helpers.modules import GenerateModulePath
 from prometheus_client import start_http_server
 from pkg.server.app import RegisterFaustApp
+from pkg.outputs.loader import CheckOutputs
+from pkg.outputs.loader import LoadPlugins
 from pkg.server.agent import RegisterAgent
 from pkg.config.load import ReadConfig
 from pkg.ingest.kafka import (
@@ -8,15 +9,9 @@ from pkg.ingest.kafka import (
     CheckTopics,
     ListTopics,
 )
-from pkg.rules.load import (
-    GenerateListOfRules,
-    LoadRuleModule,
-    LoadRulesYaml,
-)
 from typing import Dict, List
-from types import ModuleType
+import logging
 import faust
-
 
 ###############
 #    App      #
@@ -25,8 +20,14 @@ app = faust.App
 
 
 if __name__ == "__main__":
+    #### Logger ####
+    logger = logging.getLogger("RailwayJaguar")
 
+    #### Load config ####
     config = ReadConfig("conf/server.yaml")
+
+    #### Load plugins ####
+    plugins = LoadPlugins(logger)
 
     #### Register Faust app ####
     app = RegisterFaustApp(
@@ -35,33 +36,43 @@ if __name__ == "__main__":
     )
 
     #### Load rules ####
-    rules = LoadRulesYaml(GenerateListOfRules())
-    ruleTopics = [v.KafkaTopic for _, v in rules.items()]
+    from pkg.rules.load import LoadRules
+    from pkg.rules.model import Rule
 
-    #### Check rule topics against kafka topics ####
+    rules: List[Rule] = LoadRules()
+    ruleTopics: List[str] = [rule.Metadata.KafkaTopic for rule in rules]
+
+    #### Check rule outputs with plugins ####
     kc = InitAdminClient(conf=config)
     kafkaTopics = ListTopics(kc)
     CheckTopics(kafkaTopics, ruleTopics)
 
-    rulesDict: Dict[str, List[ModuleType]] = dict()
-    for ruleYamlFilePath, rule in rules.items():
-        # rules/zeek/malicious_dns.yml -> rules.zeek.malicious_dns
-        python_rule_file_path = GenerateModulePath(ruleYamlFilePath, rule)
-        mod = LoadRuleModule(python_rule_file_path)
+    #### Load output plugins
+    from pkg.outputs.loader import LoadPlugins
 
-        if rule.KafkaTopic in rulesDict:
-            rulesDict[rule.KafkaTopic].append(mod)
+    outputPlugins = LoadPlugins(logger=logger)
+
+    #### Check rule topics against kafka topics ####
+    CheckOutputs(rules=rules, outputPlugins=plugins)
+
+    rulesDict: Dict[str, List[Rule]] = dict()
+    for rule in rules:
+        if rule.Metadata.KafkaTopic in rulesDict:
+            rulesDict[rule.Metadata.KafkaTopic].append(rule)
         else:
-            x: List[ModuleType] = list()
-            x.append(mod)
-            rulesDict[rule.KafkaTopic] = x
+            rulesDict[rule.Metadata.KafkaTopic] = [rule]
 
     # Start up the server to expose the metrics.
     start_http_server(8000)
 
     # Start Faust Agents for each topic with
     # correlated rules
-    for kafkaTopic, modules in rulesDict.items():
-        RegisterAgent(app=app, topicName=kafkaTopic, rules=rulesDict[kafkaTopic])
+    for kafkaTopic, rules in rulesDict.items():
+        RegisterAgent(
+            app=app,
+            topicName=kafkaTopic,
+            rules=rules,
+            outputPlugins=outputPlugins,
+        )
 
     app.main()

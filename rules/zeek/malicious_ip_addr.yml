@@ -3,6 +3,8 @@ kind: stream_alert
 pythonrule: "malicious_ip_addr.py"
 kafkatopic: "zeek_conn"
 enabled: true
+outputs:
+  - slack
 metadata:
   name: "malicious IP addr"
   MITRE_ATTACK:
