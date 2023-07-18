@@ -2,8 +2,12 @@ aiokafka==0.8.0
 confluent-kafka==2.0.2
 dataclass_wizard==0.22.2
 faust_streaming==0.10.11
+jira==3.5.1
 mock==5.0.2
 prometheus_client==0.16.0
-pytest==7.3.1
+pytest==7.4.0
+pytest_asyncio==0.21.0
 pyyaml==6.0
 requests==2.28.2
+slack==0.0.2
+slack_sdk==3.21.3

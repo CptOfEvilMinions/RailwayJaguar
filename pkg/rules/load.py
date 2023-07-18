@@ -1,79 +1,6 @@
-from dataclasses import dataclass
-from dataclass_wizard import YAMLWizard
-from pkg.rules.yaml_checker import (
-    validateKind,
-    validateKafkaTopic,
-    validatePythonRule,
-    validateVersion,
-)
-from typing import Dict, Any, List
-from types import ModuleType
-import importlib
+from pkg.rules.model import RuleYaml, ReadRuleYaml, Rule
+from typing import Dict, List
 import glob
-
-
-@dataclass
-class Metadata:
-    Name: str
-    Description: str
-
-
-@dataclass
-class Test:
-    Name: str
-    Result: bool
-    Event: Any
-
-
-@dataclass
-class Rule(YAMLWizard):
-    Version: str
-    Kind: str
-    PythonRule: str
-    KafkaTopic: str
-    Enabled: bool
-    Metadata: Dict[str, Any]
-    Tests: List[Test]
-
-    def __post_init__(self):
-        validateVersion(self.Version)
-        validateKind(self.Kind)
-        validatePythonRule(self.PythonRule)
-        validateKafkaTopic(self.KafkaTopic)
-
-
-def ReadRuleYaml(filePath: str) -> Rule:
-    """
-    Read the rule metadata YAML file
-
-    Parameters:
-        filePath (str): File path to YAML file to read
-
-    Return:
-        ruleYaml (Rule): Return rule metadata
-
-    """
-    with open(filePath, "r") as f:
-        rule: Rule = Rule.from_yaml(f.read())
-    return rule
-
-
-def LoadRuleModule(filePath: str) -> ModuleType:
-    """
-    Load rule module
-
-    Parameters:
-        filePath (str): File path rule module
-
-    Return:
-        (ModuleType): Rule module
-        (Exception): Eerror when loading module
-    """
-    try:
-        mod = importlib.import_module(filePath)
-    except Exception as exc:
-        raise exc
-    return mod
 
 
 def GenerateListOfRules(fileGlob: str = "rules/**/*.yml") -> List[str]:
@@ -89,7 +16,7 @@ def GenerateListOfRules(fileGlob: str = "rules/**/*.yml") -> List[str]:
     return glob.glob(fileGlob)
 
 
-def LoadRulesYaml(ruleYamlsFilePaths: List[str]) -> Dict[str, Rule]:
+def LoadRulesYaml(ruleYamlsFilePaths: List[str]) -> Dict[str, RuleYaml]:
     """
     Generate a dict of rules for the for the specified
     list of YAML rule files
@@ -100,9 +27,24 @@ def LoadRulesYaml(ruleYamlsFilePaths: List[str]) -> Dict[str, Rule]:
     Return:
         (Dict[str, Rule]): Dict of rule file paths to rules obj
     """
-    rules: Dict[str, Rule] = dict()
+    rulesYaml: Dict[str, RuleYaml] = dict()
     for ruleYamlFilePath in ruleYamlsFilePaths:
         rule = ReadRuleYaml(ruleYamlFilePath)
         if rule.Enabled is True:
-            rules[ruleYamlFilePath] = rule
+            rulesYaml[ruleYamlFilePath] = rule
+    return rulesYaml
+
+
+def LoadRules() -> List[Rule]:
+    """
+    Load rules
+
+    Return:
+        A list of rules
+    """
+    rules: List[Rule] = []
+    for ruleYamlPath in GenerateListOfRules():
+        rule = Rule(ruleYamlPath)
+        if rule.Metadata.Enabled:
+            rules.append(rule)
     return rules

@@ -1,15 +1,18 @@
 ---
 version: '3.9'
 services:
-  railwayjaguar:
-    image: railwayjaguar
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-railwayjaguar
-    networks:
-      - kafka-backend
-    depends_on:
-      - broker
+  # railwayjaguar:
+  #   image: railwayjaguar
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile-railwayjaguar
+  #   environment:
+  #     - SLACK_BOT_TOKEN=T67TTUMT4/B05EDCY6LU8/rejqEXzq7sKva3Sm9isezU0L
+  #     - SLACK_CHANNEL=railwayjaguar
+  #   networks:
+  #     - kafka-backend
+  #   depends_on:
+  #     - broker
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
