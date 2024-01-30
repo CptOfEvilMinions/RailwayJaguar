@@ -31,11 +31,11 @@ repos:
         pass_filenames: false
         always_run: true
 
-  # - repo: local
-  #   hooks:
-  #     - id: rule tests
-  #       name: rule tests
-  #       entry: 'python3 cli.py test rule --rule-yaml tests/rules/powershell_empire.yml'
-  #       language: python
-  #       types: [bash]
-  #       additional_dependencies: [dataclass_wizard==0.22.2]
+  - repo: local
+    hooks:
+      - id: rule tests
+        name: rule tests
+        entry: 'python3 cli.py test rule --rule-yaml tests/rules/powershell_empire.yml'
+        language: python
+        types: [bash]
+        additional_dependencies: [dataclass_wizard==0.22.3]
