@@ -1,5 +1,5 @@
 from pkg.helpers.modules import LoadModule, GenerateModulePath
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, TypedDict
 from dataclass_wizard import YAMLWizard
 from pkg.rules.validate import (
     validateKind,
@@ -34,7 +34,7 @@ class Test:
     __test__ = False
     Name: str
     Result: bool
-    Event: Any
+    Event: TypedDict
 
 
 @dataclass
@@ -44,7 +44,7 @@ class RuleYaml(YAMLWizard):
     PythonRule: str
     KafkaTopic: str
     Enabled: bool
-    Metadata: Dict[str, Any]
+    Metadata: Dict[str, TypedDict]
     Outputs: List[str]
     Tests: Optional[List[Test]]
 
@@ -68,5 +68,4 @@ def ReadRuleYaml(filePath: str) -> RuleYaml:
     """
     with open(filePath, "r") as f:
         ruleYaml: RuleYaml = RuleYaml.from_yaml(f.read())
-        assert ruleYaml is not None
     return ruleYaml

@@ -11,7 +11,7 @@ from pkg.rules.validate import (
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestRuleValidators(unittest.TestCase):
     def test_validateKind(self):
         self.assertTrue(validateKind("stream_alert"))
 

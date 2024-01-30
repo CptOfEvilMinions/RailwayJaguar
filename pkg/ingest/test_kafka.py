@@ -4,7 +4,7 @@ from typing import List
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestKafka(unittest.TestCase):
     def test_checkTopics(self):
         ruleTopics: List[str] = [
             "zeek_conn",

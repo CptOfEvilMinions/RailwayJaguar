@@ -6,7 +6,7 @@ from pkg.cli.validate import (
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestCLIValidators(unittest.TestCase):
     def test_validateAppConfig(self):
         self.assertIsNone(ValidateAppConfig("tests/conf/server.yml"))
 

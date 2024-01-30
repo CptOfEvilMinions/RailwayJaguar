@@ -9,7 +9,7 @@ from types import ModuleType
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestReadingRuleYAML(unittest.TestCase):
     def test_readRuleYaml(self):
         ruleYaml = ReadRuleYaml("tests/rules/powershell_empire.yml")
         self.assertEqual(ruleYaml.Version, "v1")

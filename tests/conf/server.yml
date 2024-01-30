@@ -4,7 +4,3 @@ kafka:
   boostrapservers:
     - kafka.hackinglab.local:9092
     - broker:29092
-secret:
-  vaultaddr: https://vault.test:8200
-  # https://developer.hashicorp.com/vault/tutorials/tokens/tokens#tokens-with-use-limit
-  vaulttoken: hvs.CAESIJRM-T1q5lEjIWux1Tjx-VGqAYJdd4FZtbp1wpD5Ym9pGh4KHGh2cy5TSjRndGoxaU44NzNscm5MSlRLQXZ0ZGg

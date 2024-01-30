@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from dataclass_wizard import YAMLWizard
 from urllib.parse import urlparse
-from typing import List, Optional
+from typing import List
 import re
 
 
@@ -58,19 +58,24 @@ class Kafka:
 
 
 @dataclass
-class Secret:
-    VaultAddr: str
-    VaultToken: str
-
-
-@dataclass
 class Config(YAMLWizard):
     Kafka: Kafka
     App: App
-    Secret: Optional[Secret]
 
 
 def validateName(app: str) -> bool:
+    """
+    Validate app name URIs
+
+    Params:
+        app (str) - application name from config
+
+    Raises:
+        InvalidName: Invalid name provided in config
+
+    Returns:
+        bool: Return True if name is valid
+    """
     # https://regex101.com/r/UgwsEO/1
     appRegex = r"^\w+$"
     if bool(re.match(appRegex, app)):
@@ -80,19 +85,21 @@ def validateName(app: str) -> bool:
 
 
 def validateKafka(kafka: Kafka) -> bool:
+    """
+    Validate Kafka URIs
+
+    Params:
+        kafka (Kafka) - Kafka object
+
+    Raises:
+        InvalidBootstrapServer: Invalid URI specified for Kafka bootstrap server
+
+    Returns:
+        bool: Return True if Kafka bootstrap server is valid
+    """
     for bserver in kafka.BoostrapServers:
         if bool(urlparse(bserver)) is False:
             raise InvalidBootstrapServer(bserver=bserver)
-    return True
-
-
-def validateSecret(secret: Secret) -> bool:
-    # https://discuss.hashicorp.com/t/what-is-regex-pattern-for-hashicorp-vault-tokens/50502/2
-    vaultRegex = r"hv[sb]\.(?:[A-Za-z0-9]{24}|[A-Za-z0-9_-]{91,})"
-    if bool(urlparse(secret.VaultAddr)) is False:
-        raise InvalidVaultAddr(addr=secret.VaultAddr)
-    if bool(re.match(vaultRegex, secret.VaultToken)) is False:
-        raise InvalidVaultSecret()
     return True
 
 
@@ -113,7 +120,13 @@ def ReadConfig(filePath: str) -> Config:
 
 
 def VerifyConfig(c: Config) -> bool:
-    validateName(c.App.Name)
-    validateKafka(c.Kafka)
-    # validateSecret(c.Secret)
-    return True
+    """
+    Validate YAML config
+
+    Params:
+        c (Config): Config instance
+
+    Return:
+        bool: If config is valid
+    """
+    return validateName(c.App.Name) and validateKafka(c.Kafka)

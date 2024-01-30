@@ -2,7 +2,7 @@ from pkg.rules.model import ReadRuleYaml, RuleYaml
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestRuleModel(unittest.TestCase):
     def test_ReadRuleYaml(self):
         ruleYaml: RuleYaml = ReadRuleYaml("tests/rules/powershell_empire.yml")
         self.assertEqual(ruleYaml.Enabled, True)

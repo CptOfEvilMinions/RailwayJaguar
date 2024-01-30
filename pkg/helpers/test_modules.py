@@ -5,14 +5,14 @@ from types import ModuleType
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestModuleHelpers(unittest.TestCase):
     """
     Convert file path of rule YAML to python pkg dir format
 
     rules/zeek/malicious_dns.yml -> rules.zeek.malicious_dns
     """
 
-    def test_generateModulePath(self):
+    def test_GenerateModulePath(self):
         ruleYamlFilePath: str = "tests/rules/powershell_empire.yml"
         ruleYaml: RuleYaml = ReadRuleYaml(ruleYamlFilePath)
 
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
             "tests.rules.powershell_empire",
         )
 
-    def test_loadModule(self):
+    def test_LoadModule(self):
         # Load rule YAML
         ruleYamlFilePath: str = "tests/rules/powershell_empire.yml"
         ruleYaml: RuleYaml = ReadRuleYaml(ruleYamlFilePath)

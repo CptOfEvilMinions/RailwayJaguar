@@ -5,7 +5,7 @@ import unittest
 import logging
 
 
-class Test(unittest.TestCase):
+class TestLoadPlugin(unittest.TestCase):
     def test_loadPlugins(self):
         logger = logging.Logger(name="test_loadPlugins")
         with patch("pkg.outputs.loader.__PLUGIN_DIR", "tests/plugins/[!__init__]*.py"):

@@ -4,6 +4,3 @@ kafka:
   boostrapservers:
     - kafka.hackinglab.local:9092
     - broker:29092
-secret:
-  vaultaddr: "vault.hackinglab.local"
-  vaulttoken: ""

@@ -9,6 +9,13 @@ A Pytohn rule based detection platform for Kafka
 1. List Kafka topics: `kcat -L -b localhost:9092`
 1. Consume 5 messages: `kcat -C -b localhost:9092 -t zeek_conn -c 5`
 
+## Deploy
+1. If using the Slack plugin:
+    1. Generate Slack webhook token
+    1. Copy Slack webhook token
+    1. `echo $(pbpaste) | docker secret create railwayjaguar-slack-token -`
+1. `docker build -t railwayjaguar .`
+
 ## References
 * [Python | Interconversion between Dictionary and Bytes](https://www.geeksforgeeks.org/python-interconversion-between-dictionary-and-bytes/)
 * [confluentinc/cp-zookeeper](https://hub.docker.com/r/confluentinc/cp-zookeeper/tags?page=1&name=7.3)

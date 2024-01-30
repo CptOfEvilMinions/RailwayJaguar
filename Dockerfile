@@ -1,12 +1,8 @@
-FROM ubuntu:22.04
+FROM python:3.12.1-alpine
 
-RUN useradd railwayjaguar
+RUN adduser -D railwayjaguar
 
-RUN apt-get update -y
-RUN apt-get install -y python3 \
-    python3-dev \
-    python3-pip \
-    gcc
+RUN apk add musl-dev gcc librdkafka librdkafka-dev
 
 COPY . /app
 WORKDIR /app
