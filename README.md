@@ -15,6 +15,7 @@ A Pytohn rule based detection platform for Kafka
     1. Copy Slack webhook token
     1. `echo $(pbpaste) | docker secret create railwayjaguar-slack-token -`
 1. `docker build -t railwayjaguar .`
+1. `docker stack deploy -c docker-compose.yml railwayjaguar`
 
 ## References
 * [Python | Interconversion between Dictionary and Bytes](https://www.geeksforgeeks.org/python-interconversion-between-dictionary-and-bytes/)

@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import TypedDict, Dict
 import logging
 
 
@@ -30,5 +30,5 @@ class OutputInterface(metaclass=ABCMeta):
         """Initialize the plugin"""
 
     @abstractmethod
-    def run(self, event: Any) -> None:
+    def run(self, event: TypedDict, ruleMetdata: Dict[str, TypedDict]) -> None:
         """Run the plugin"""

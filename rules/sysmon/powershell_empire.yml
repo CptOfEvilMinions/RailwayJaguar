@@ -2,7 +2,7 @@ version: v1
 kind: stream_alert
 pythonrule: "powershell_empire.py"
 kafkatopic: "sysmon"
-enabled: False
+enabled: false
 outputs:
   - slack
 metadata:
@@ -23,6 +23,7 @@ metadata:
     sub_technique_id: D3-PSA
   RequiedFields:
     - process.command_line
+  runbook: https://github.com/palantir/alerting-detection-strategy-framework/blob/master/ADS-Examples/003-osquery-MacOS-Malware-Detection.md
 
 tests:
   - name: True positive - powershell empire

@@ -39,6 +39,6 @@ def RegisterAgent(
                 if rule.run(event=event):
                     # Send event to output
                     for output in rule.Metadata.Outputs:
-                        outputPlugins[output].run(event)
+                        outputPlugins[output].run(event, rule.Metadata.Metadata)
                     ALERT_COUNT.labels(topicName, rule.Metadata.Metadata["name"]).inc()
                 EVENTS_PROCESSED.labels(topicName, rule.Metadata.Metadata["name"]).inc()

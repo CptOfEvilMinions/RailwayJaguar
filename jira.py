@@ -1,6 +1,6 @@
 from pkg.outputs.model import OutputInterface, Meta
+from typing import TypedDict, Dict
 from jira import JIRA, Issue
-from typing import Any, Dict
 from logging import Logger
 import os
 
@@ -26,13 +26,16 @@ class Plugin(OutputInterface):
         self.token = os.environ["JIRA_TOKEN"]
         self.client = JIRA(basic_auth=(self.email, self.token), server=self.url)
 
-    def run(self, event: Any) -> None:
+    def run(self, event: TypedDict, ruleMetdata: Dict[str, TypedDict]) -> None:
         msg = f"""
+        runbook url: {ruleMetdata["runbook"]}
+        {{code}}
         {event}
+        {{code}}
         """
         issue_dict: Dict[str, Dict[str, str] | str] = {
             "project": {"key": self.project},
-            "summary": "Testing issue from Python Jira Handbook",
+            "summary": f"{ruleMetdata['name']}",
             "description": msg,
             "issuetype": {"name": "Bug"},
         }

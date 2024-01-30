@@ -12,6 +12,14 @@ from types import ModuleType
 
 
 class Rule:
+    """
+    A class to represent Rule
+
+    Attributes:
+        yamlRulePath: str
+            File path to rule YAML
+    """
+
     def __init__(self, yamlRulePath: str) -> None:
         self.__yamlRulePath: str = yamlRulePath
         self.Metadata: RuleYaml = ReadRuleYaml(self.__yamlRulePath)
@@ -25,12 +33,29 @@ class Rule:
 
 @dataclass
 class Metadata:
+    """
+    Rule YAML dataclass for ingesting rule metadata from YAML
+
+    Args:
+        Name (str): Name of test
+        Description (str):
+    """
+
     Name: str
     Description: str
 
 
 @dataclass
 class Test:
+    """
+    Rule YAML dataclass for ingesting rule metadata from YAML
+
+    Args:
+        Name (str): Name of test
+        Result (bool): Expected result for test
+        Event (TypedDict): Test event, typically in JSON format
+    """
+
     __test__ = False
     Name: str
     Result: bool
@@ -39,6 +64,20 @@ class Test:
 
 @dataclass
 class RuleYaml(YAMLWizard):
+    """
+    Rule YAML dataclass for ingesting rule metadata from YAML
+
+    Args:
+        Version (str): Rule YAML config version
+        Kind (str): Specify rule type
+        PythonRule (str): Specify file name of Python rule
+        KafkaTopic (str): Specify kafka topic to ingest events from for rule
+        Enabled (bool): Whether rule is enabled/disabled
+        Metadata (Dict[str, TypedDict]): Rule metadata
+        Outputs (List[str]): List of output plugins to send alert too
+        Tests (Optional[List[Test]]): List of test events for rule
+    """
+
     Version: str
     Kind: str
     PythonRule: str

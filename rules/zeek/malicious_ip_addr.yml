@@ -21,6 +21,7 @@ metadata:
     sub_technique_id: D3-PMAD
   RequiedFields:
     - id.resp_h
+  runbook: https://github.com/palantir/alerting-detection-strategy-framework/blob/master/ADS-Examples/003-osquery-MacOS-Malware-Detection.md
 
 tests:
   - name: True positive

@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, TypedDict
 import re
 
 # https://regex101.com/r/Qkq6yi/1
@@ -72,7 +72,7 @@ def validateKafkaTopic(kafkaTopic: str) -> bool:
         raise InvalidKafkaTopic
 
 
-def CheckRuleYaml(yamlDict: Dict[str, Any]) -> bool:
+def CheckRuleYaml(yamlDict: Dict[str, TypedDict]) -> bool:
     if (
         validateVersion(yamlDict["version"])
         and validateKind(yamlDict["kind"])
