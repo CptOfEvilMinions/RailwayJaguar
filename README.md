@@ -1,5 +1,5 @@
 # RailwayJaguar
-A Pytohn rule based detection platform for Kafka
+A Python stream based detection engine using Faust and Kafka
 
 ## Local dev
 ### Spin up Docker kafka instance
@@ -16,6 +16,7 @@ A Pytohn rule based detection platform for Kafka
     1. `echo $(pbpaste) | docker secret create railwayjaguar-slack-token -`
 1. `docker build -t railwayjaguar .`
 1. `docker stack deploy -c docker-compose.yml railwayjaguar`
+
 
 ## References
 * [Python | Interconversion between Dictionary and Bytes](https://www.geeksforgeeks.org/python-interconversion-between-dictionary-and-bytes/)
