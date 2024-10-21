@@ -17,6 +17,7 @@ A Pytohn rule based detection platform for Kafka
 1. `docker build -t railwayjaguar .`
 1. `docker stack deploy -c docker-compose.yml railwayjaguar`
 
+
 ## References
 * [Python | Interconversion between Dictionary and Bytes](https://www.geeksforgeeks.org/python-interconversion-between-dictionary-and-bytes/)
 * [confluentinc/cp-zookeeper](https://hub.docker.com/r/confluentinc/cp-zookeeper/tags?page=1&name=7.3)
