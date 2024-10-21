@@ -1,5 +1,5 @@
 # RailwayJaguar
-A Pytohn rule based detection platform for Kafka
+A Python stream based detection engine using Faust and Kafka
 
 ## Local dev
 ### Spin up Docker kafka instance
